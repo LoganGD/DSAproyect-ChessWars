@@ -6,12 +6,8 @@
  - pygame
  - import https://github.com/pvigier/perlin-numpy
 
-Imports for the dependancies:
 ```bash
-pip install pygame
-```
-```bash
-pip install git+https://github.com/pvigier/perlin-numpy
+pip install -r requirements.txt
 ```
 
 ## TODO
