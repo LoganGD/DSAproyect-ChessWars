@@ -15,6 +15,13 @@ python -m venv env
 pip install -r requirements.txt
 ```
 
+## Running
+
+Just run
+```bash
+python main.py
+```
+
 ## TODO
 
 Make a proper yml
