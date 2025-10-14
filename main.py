@@ -24,7 +24,10 @@ def main():
     )
 
     # cow
-    cow = Cow(GRID_WIDTH / 2, GRID_HEIGHT / 2)
+    cows = pygame.sprite.Group()
+    Cow.containers = (cows)
+    for _ in range(100):
+        cow = Cow(GRID_WIDTH / 2, GRID_HEIGHT / 2)
 
     # debug components
     font_size = 24
@@ -79,7 +82,9 @@ def main():
         # Start world rendering
         world.fill(RED)
         grid.draw(world, camera)
-        cow.draw(world, camera)
+        for cow in cows:
+            cow.update(dt)
+            cow.draw(world, grid, camera)
         world_rect = world.get_rect(bottomleft=(0, screen_height))
         screen.blit(world, world_rect)
         
@@ -87,10 +92,10 @@ def main():
         pygame.display.flip()
 
         # Update clock
-        dt = clock.tick(0) # limit FPS (0 for unlimited)
+        dt = clock.tick(0) / 1000# limit FPS (0 for unlimited)
         new_fps += 1
         time_since_fps += dt
-        if time_since_fps >= 1000:
+        if time_since_fps >= 1:
             fps = new_fps
             time_since_fps,new_fps = 0,0
         

@@ -19,6 +19,11 @@ class Grid:
                 else:
                     self.cells[i].append(Terrain(i, j, GREEN))
 
+    def get_terrain(self, position: pygame.Vector2):
+        x = floor(position.x)
+        y = floor(position.y)
+        return self.cells[x][y]
+
     def draw(self, world: pygame.Surface, camera: pygame.Vector3):
         # limit to draw only what it's shown on camera
         low_x = floor(camera.x)

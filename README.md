@@ -21,7 +21,3 @@ Just run
 ```bash
 python main.py
 ```
-
-## TODO
-
-Make a proper yml
