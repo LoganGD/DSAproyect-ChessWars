@@ -1,0 +1,30 @@
+import pygame
+from constants import *
+
+class Piece(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__(self.containers)
+
+    def draw(self, world: pygame.Surface, square_size: int):
+        pos_x = ( self.position.x + 1/2) * square_size
+        pos_y = ( self.position.y + 1/2) * square_size
+
+        font_size = 20
+        font = pygame.font.Font(None, font_size) # None for default
+        text = font.render(self.name, True, BLACK, GRAY)
+        text_rect = text.get_rect(center=(pos_x, pos_y))
+        world.blit(text, text_rect)
+
+
+class Pawn(Piece):
+    def __init__(self, pos_x, pos_y):
+        super().__init__()
+        self.position = pygame.Vector2(pos_x, pos_y)
+        self.name = "Pawn"
+
+
+class Rook(Piece):
+    def __init__(self, pos_x, pos_y):
+        super().__init__()
+        self.position = pygame.Vector2(pos_x, pos_y)
+        self.name = "Rook"
