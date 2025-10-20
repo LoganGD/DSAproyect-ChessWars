@@ -14,4 +14,9 @@ COLOR_DARK = (100,100,100)
 
 TEXT_FONT = None # None for default
 
+# screenn size (0,0) sets fullscreen
+SCREEN_SIZE = (0,0)
+DEBUG_MENU_SIZE = (100,100)
+DEBUG_SCREEN_SIZE = (80,25)
+
 DEBUG_MODE = True

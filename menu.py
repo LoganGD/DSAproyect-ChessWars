@@ -3,6 +3,13 @@ from constants import *
 from button import *
 
 class Menu:
+    def __init__(self, size: tuple[int], functions: list):
+        pass
+    def draw(self, container: pygame.Surface, mouse: tuple[int]):
+        pass
+    def click(self, mouse: tuple[int]):
+        pass
+
     def __init__(self , width, height, list_objects: list[Button]):
         self.width = width
         self.height = height

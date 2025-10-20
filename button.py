@@ -2,6 +2,13 @@ import pygame
 from constants import *
 
 class Button:
+    def __init__(self, size: tuple[int], position: tuple[int], function):
+        pass
+    def draw(self, container: pygame.Surface, mouse: tuple[int]):
+        pass
+    def click(self, mouse: tuple[int]):
+        pass
+
     def __init__(self, text: str, width: int, height: int, pos_x = 0, pos_y = 0):
         self.position = pygame.Vector2(pos_x, pos_y)
         self.width = width

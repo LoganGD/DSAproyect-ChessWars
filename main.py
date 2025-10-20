@@ -5,32 +5,33 @@ from math import floor
 from pieces import *
 from deque import Deque
 from button import Button
+from menu import Menu
 
 def main():
     pygame.init()
     pygame.display.set_caption("Ajedrez 2")
     
     # global objects
-    screen = pygame.display.set_mode() # Tuple resolution, empty for fullscreen
+    screen = pygame.display.set_mode(SCREEN_SIZE)
     clock = pygame.time.Clock()
     grid = Grid(screen)
-    world_width = grid_width * square_size
-    world = pygame.Surface((world_width, screen.get_height()))
-    side_bar_width = screen.get_width() - world_width
+    world = pygame.Surface((grid.width, screen.get_height()))
+    side_bar_width = screen.get_width() - grid.width
     side_bar = pygame.Surface((side_bar_width, screen.get_height()))
 
     # Pieces
     pieces = Deque()
-    pieces.push_back(Pawn(1,1))
-    pieces.push_back(Rook(1,3))
-    buttons = []
-    buttons.append(Button("Attack", side_bar_width / 2, 20, 40, 20))
-    buttons.append(Button("Defend", side_bar_width / 2, 50, 40, 20))
-
-    clicked = None
+    Piece.pieces = pieces
+    Pawn(1,1)
+    Rook(1,3)
 
     # debug components
-    debug_screen = pygame.Surface((80, 25))
+    creators = []
+    for piece in Piece.__subclasses__():
+        creators.append(Button(piece.__class__))
+    debug_menu = Menu(DEBUG_MENU_SIZE, creators)
+    clicked = None
+    debug_screen = pygame.Surface(DEBUG_SCREEN_SIZE)
     font = pygame.font.Font(TEXT_FONT, 24)
     dt,fps = 0,0
     time_since_fps,new_fps = 0,0
@@ -45,8 +46,9 @@ def main():
                 pygame.quit()
                 return
             if event.type == pygame.MOUSEBUTTONDOWN:
-                for button in buttons:
-                    button.click(mouse)
+                if event.button == 1 and clicked:
+                    debug_menu.click(mouse)
+                    clicked = False
                 if event.button == 3:
                     clicked = mouse
   
