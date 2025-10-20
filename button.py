@@ -2,7 +2,7 @@ import pygame
 from constants import *
 
 class Button:
-    def __init__(self, text, pos_x, pos_y, width, height):
+    def __init__(self, text, width, height, pos_x, pos_y):
         self.position = pygame.Vector2(pos_x, pos_y)
         self.width = width
         self.height = height

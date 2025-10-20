@@ -13,9 +13,7 @@ def main():
     # global objects
     screen = pygame.display.set_mode() # Tuple resolution, empty for fullscreen
     clock = pygame.time.Clock()
-    square_size = screen.get_height() / GRID_HEIGHT
-    grid_width = floor((screen.get_width() - SIDE_BAR_MIN_WIDTH) / square_size)
-    grid = Grid(grid_width, GRID_HEIGHT)
+    grid = Grid(screen)
     world_width = grid_width * square_size
     world = pygame.Surface((world_width, screen.get_height()))
     side_bar_width = screen.get_width() - world_width
