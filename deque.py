@@ -98,18 +98,3 @@ class Deque:
         while current_node:
             yield current_node.get_data()
             current_node = current_node.get_prev()
-
-
-ayuda = Deque()
-
-ayuda.push_front(10)
-ayuda.push_front(100)
-ayuda.push_front(5)
-ayuda.push_front(25)
-
-while (True):
-    print(ayuda)
-    print(ayuda.back())
-    ayuda.pop_back()
-
-
