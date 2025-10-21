@@ -7,55 +7,27 @@ class Menu:
         self.size = size
         self.back = pygame.Surface(self.size)
         self.lenght = len(functions) 
-        self.bottons = []
+        self.buttons = []
 
-        offset=0
+        offset = 0
         for function in functions:
-            size_botton = [self.size[0]//self.lenght ,self.size[1]]
-            botton = Button(size_botton, [offset + (size_botton[0]//2),self.size//2], function)
-            offset +=  size_botton[0]
-            self.bottons.insert(botton)
+            button_size = (self.size[0] // self.lenght - 10, self.size[1] - 10)
+            button_position = (offset + (button_size[0] // 2) + 5, self.size[1] // 2 + 5)
+            button = Button(button_size, button_position, function)
+            offset +=  button_size[0]
+            self.buttons.append(button)
  
 
     def draw(self, container: pygame.Surface, position: tuple[int], mouse):
-        
-        for botton in self.bottons:
-            botton.draw(self.back, mouse)
+        self.back.fill(BEIGE)
+        for button in self.buttons:
+            button.draw(self.back, mouse)
         
         back_rect = self.back.get_rect(topleft = position)
-        container.blit(self.back,back_rect)
+        container.blit(self.back, back_rect)
 
 
-    def click(self, mouse: tuple[int]):
+    def click(self, mouse: tuple[int], clicked: tuple[int]):
         
-        for botton in self.bottons:
-            botton.click(mouse)
-        
-
-    def __init__(self , width, height, list_objects: list[Button]):
-        self.width = width
-        self.height = height
-        self.list_objects = list_objects
-        self.offset = 0
-
-        self.back = pygame.Surface((self.width, self.height))
-        self.back.fill(BEIGE)
-
-        for object in list_objects:
-            object.set_pos(0,self.offset)
-            self.offset += object.get_width()
-    
-    def draw(self, world, mouse: tuple):
-        for object in self.list_objects:
-            object.draw(self.back, mouse)
-        
-        back_rect = self.back.get_rec(topleft = mouse)
-
-        world.blit(self.back, back_rect)
-        
-
-        
-
-        
-        
-       
+        for button in self.buttons:
+            button.click(clicked)

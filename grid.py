@@ -24,7 +24,7 @@ class Grid:
 class Square:
     def __init__(self, pos_x: float, pos_y: float):
         self.position = pygame.Vector2(pos_x, pos_y)
-        self.color = WHITE if ( pos_x + pos_y ) % 2 == 0 else BLACK
+        self.color = BLACK if ( pos_x + pos_y ) % 2 else WHITE
     
     def draw(self, world: pygame.Surface, square_size: float):
         pos_x,pos_y = self.position * square_size

@@ -1,3 +1,12 @@
+from random import randint
+
+def RAND_RED():
+    return (randint(0,255),0,0)
+def RAND_GREEN():
+    return (0,randint(0,255),0)
+def RAND_BLUE():
+    return (0,0,randint(0,255))
+
 GRID_HEIGHT = 12
 SIDE_BAR_MIN_WIDTH = 360
 
@@ -12,7 +21,8 @@ GRAY = (150,150,150)
 COLOR_LIGHT = (170,170,170)
 COLOR_DARK = (100,100,100)
 
-TEXT_FONT = None # None for default
+FONT_STYLE = None # None for default
+FONT_SIZE = 24
 
 # screenn size (0,0) sets fullscreen
 SCREEN_SIZE = (0,0)

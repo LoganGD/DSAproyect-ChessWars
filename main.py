@@ -22,17 +22,19 @@ def main():
     # Pieces
     pieces = Deque()
     Piece.pieces = pieces
-    Pawn(1,1)
-    Rook(1,3)
+    Piece.square_size = grid.square_size
+    Pawn((1,1))
+    Rook((1,3))
 
     # debug components
-    creators = []
+    buttons_settings = []
     for piece in Piece.__subclasses__():
-        creators.append(Button(piece.__class__))
-    debug_menu = Menu(DEBUG_MENU_SIZE, creators)
+        function = lambda position: (position[0] // grid.square_size, position[1] // grid.square_size)
+        buttons_settings.append([function, piece.__name__])
+    debug_menu = Menu(DEBUG_MENU_SIZE, buttons_settings)
     clicked = None
     debug_screen = pygame.Surface(DEBUG_SCREEN_SIZE)
-    font = pygame.font.Font(TEXT_FONT, 24)
+    font = pygame.font.Font(FONT_STYLE, FONT_SIZE)
     dt,fps = 0,0
     time_since_fps,new_fps = 0,0
     move_timer = 0
@@ -47,48 +49,37 @@ def main():
                 return
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1 and clicked:
-                    debug_menu.click(mouse)
+                    debug_menu.click(mouse, clicked)
                     clicked = False
-                if event.button == 3:
+                if event.button == 3 and DEBUG_MODE:
                     clicked = mouse
   
         # Start rendering
-        screen.fill(PURPLE)
+        screen.fill(RAND_RED())
 
-        # Start world rendering
-        world.fill(RED)
+        # World rendering
+        world.fill(RAND_GREEN())
         grid.draw(world)
-        # while move_timer >= 5:
-        #     move_timer -= 5
-        #     current_piece = pieces.front()
-        #     current_piece.move()
-        #     pieces.pop_front()
-        #     pieces.push_back(current_piece)
         for piece in pieces:
-            piece.draw(world, square_size)
-
-        world_rect = world.get_rect(bottomright=(screen.get_width(), screen.get_height()))
+            piece.draw(world)
+        world_rect = world.get_rect( bottomright = screen.get_size() )
         screen.blit(world, world_rect)
 
-        # debug menu
-        if clicked:
-            pass
-
         # Side bar rendering
-        side_bar.fill(BEIGE)
-        for button in buttons:
-            button.draw(side_bar, mouse)
-        side_bar_rect = side_bar.get_rect(bottomleft=(0, screen.get_height()))
+        side_bar.fill(RAND_BLUE())
+        side_bar_rect = side_bar.get_rect( bottomleft = (0, screen.get_height()) )
         screen.blit(side_bar, side_bar_rect)
         
-        # debug screen (currently just fps)
+        # debug screen
         if DEBUG_MODE:
             text = font.render("FPS: " + str(fps), True, WHITE)
-            text_rect = text.get_rect(topleft=(5,5))
+            text_rect = text.get_rect( topleft = (5,5) )
             debug_screen.fill(GRAY)
             debug_screen.blit(text, text_rect)
-            debug_screen_rect = debug_screen.get_rect(bottomleft=(0, screen.get_height()))
+            debug_screen_rect = debug_screen.get_rect( bottomleft = (0, screen.get_height()) )
             screen.blit(debug_screen, debug_screen_rect)
+        if clicked:
+            debug_menu.draw(screen, clicked, mouse)
 
         # Show on screen
         pygame.display.flip()

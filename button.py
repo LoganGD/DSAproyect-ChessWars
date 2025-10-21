@@ -9,9 +9,9 @@ class Button:
         self.function = function
         self.back = pygame.Surface(size)
     
-    def click(self, mouse: tuple[int]):
-        if abs(mouse[0] - self.position[0]) < self.width / 2 and abs(mouse[1] - self.position[1]) < self.height / 2:
-            print(self.text)
+    def click(self, clicked: tuple[int]):
+        if abs(clicked[0] - self.position[0]) < self.width / 2 and abs(clicked[1] - self.position[1]) < self.height / 2:
+            self.function(*clicked)
 
     def draw(self, container: pygame.Surface, mouse: tuple[int]):
         color = COLOR_LIGHT
