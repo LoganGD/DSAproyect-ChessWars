@@ -87,7 +87,6 @@ class Deque:
         self.__back.set_prev(None)
 
     def __repr__(self):
-        current_node = self.__front
         print("[", end="")
         for value in self:
             print(value, end=",")

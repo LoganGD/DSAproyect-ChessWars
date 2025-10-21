@@ -1,7 +1,6 @@
 import pygame
 from grid import Grid
 from constants import *
-from math import floor
 from pieces import *
 from deque import Deque
 from button import Button
@@ -21,28 +20,26 @@ def main():
     side_bar = pygame.Surface((side_bar_width, screen.get_height()))
 
     # Pieces
-    pieces = Deque()
-    Piece.pieces = pieces
+    pieces_deque = Deque()
+    Piece.pieces_deque = pieces_deque
     Piece.square_size = grid.square_size
-    Pawn((1,1))
-    Rook((1,3))
 
     # debug components
     buttons_settings = []
     for piece in Piece.__subclasses__():
         function = lambda position, piece=piece: piece(position // grid.square_size)
-        buttons_settings.append([piece.__name__, function])
+        buttons_settings.append(["Create " + piece.__name__, function])
     debug_menu = Menu(DEBUG_MENU_SIZE, buttons_settings)
     clicked = None
     debug_screen = pygame.Surface(DEBUG_SCREEN_SIZE)
     font = pygame.font.Font(FONT_STYLE, FONT_SIZE)
     dt,fps = 0,0
-    time_since_fps,new_fps = 0,0
     move_timer = 0
 
     while True:
         keys = pygame.key.get_pressed()
         mouse = pygame.Vector2(pygame.mouse.get_pos())
+
         # Handle events
         for event in pygame.event.get():
             if event.type == pygame.QUIT or keys[pygame.K_ESCAPE]:
@@ -55,44 +52,36 @@ def main():
                 if event.button == 3 and DEBUG_MODE:
                     clicked = mouse
   
-        # Start rendering
-        screen.fill(RAND_RED())
-
         # World rendering
-        world.fill(RAND_GREEN())
+        world.fill(RAND_RED())
         grid.draw(world)
-        for piece in pieces:
+        for piece in pieces_deque:
             piece.draw(world)
+        if clicked:
+            debug_menu.draw(world, clicked - world_offset, mouse - world_offset)
+        world_rect = world.get_rect( bottomright = screen.get_size() )
+        screen.blit(world, world_rect)
 
         # Side bar rendering
         side_bar.fill(RAND_BLUE())
+        side_bar_rect = side_bar.get_rect( bottomleft = (0, screen.get_height()) )
+        screen.blit(side_bar, side_bar_rect)
         
         # debug screen
         if DEBUG_MODE:
-            text = font.render("FPS: " + str(fps), True, WHITE)
+            fps = (fps * (1 - dt) + clock.get_fps() * dt)
+            text = font.render("FPS: " + str(int(fps)), True, WHITE)
             text_rect = text.get_rect( topleft = (5,5) )
             debug_screen.fill(GRAY)
             debug_screen.blit(text, text_rect)
             debug_screen_rect = debug_screen.get_rect( bottomleft = (0, screen.get_height()) )
             screen.blit(debug_screen, debug_screen_rect)
-        if clicked:
-            debug_menu.draw(world, clicked - world_offset, mouse - world_offset)
 
         # Show on screen
-        world_rect = world.get_rect( bottomright = screen.get_size() )
-        screen.blit(world, world_rect)
-        side_bar_rect = side_bar.get_rect( bottomleft = (0, screen.get_height()) )
-        screen.blit(side_bar, side_bar_rect)
         pygame.display.flip()
 
         # Update clock
         dt = clock.tick(0) / 1000 # limit FPS (0 for unlimited)
-        move_timer += dt
-        new_fps += 1
-        time_since_fps += dt
-        if time_since_fps >= 1:
-            fps = new_fps
-            time_since_fps,new_fps = 0,0
         
 if __name__ == "__main__":
     main()

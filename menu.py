@@ -17,7 +17,10 @@ class Menu:
             button = Button(button_size, button_position, text, function)
             offset +=  button_size[1] + 5
             self.buttons.append(button)
- 
+
+    def click(self, position: pygame.Vector2, mouse: pygame.Vector2):
+        for button in self.buttons:
+            button.click(mouse - position, position) 
 
     def draw(self, container: pygame.Surface, position: pygame.Vector2, mouse: pygame.Vector2):
         if position.x < 0:
@@ -39,9 +42,3 @@ class Menu:
                 back_rect = self.back.get_rect(bottomright = position)
 
         container.blit(self.back, back_rect)
-        
-
-    def click(self, position: pygame.Vector2, mouse: pygame.Vector2):
-        
-        for button in self.buttons:
-            button.click(mouse - position, position)

@@ -3,7 +3,7 @@ from constants import *
 
 class Piece:
     def __init__(self, position: tuple[int]):
-        self.pieces.push_back(self)
+        self.pieces_deque.push_back(self)
         self.position = pygame.Vector2(position)
 
     def draw(self, world: pygame.Surface):
@@ -20,10 +20,18 @@ class Piece:
 class Pawn(Piece):
     def __init__(self, position: tuple[int]):
         super().__init__(position)
-        self.name = "Pawn"
 
 
 class Rook(Piece):
     def __init__(self, position: tuple[int]):
         super().__init__(position)
-        self.name = "Rook"
+
+
+class Bishop(Piece):
+    def __init__(self, position: tuple[int]):
+        super().__init__(position)
+
+
+class Knight(Piece):
+    def __init__(self, position: tuple[int]):
+        super().__init__(position)
