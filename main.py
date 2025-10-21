@@ -17,6 +17,7 @@ def main():
     grid = Grid(screen)
     world = pygame.Surface((grid.width, screen.get_height()))
     side_bar_width = screen.get_width() - grid.width
+    world_offset = pygame.Vector2(side_bar_width,0)
     side_bar = pygame.Surface((side_bar_width, screen.get_height()))
 
     # Pieces
@@ -29,8 +30,8 @@ def main():
     # debug components
     buttons_settings = []
     for piece in Piece.__subclasses__():
-        function = lambda position: (position[0] // grid.square_size, position[1] // grid.square_size)
-        buttons_settings.append([function, piece.__name__])
+        function = lambda position, piece=piece: piece(position // grid.square_size)
+        buttons_settings.append([piece.__name__, function])
     debug_menu = Menu(DEBUG_MENU_SIZE, buttons_settings)
     clicked = None
     debug_screen = pygame.Surface(DEBUG_SCREEN_SIZE)
@@ -41,7 +42,7 @@ def main():
 
     while True:
         keys = pygame.key.get_pressed()
-        mouse = pygame.mouse.get_pos()
+        mouse = pygame.Vector2(pygame.mouse.get_pos())
         # Handle events
         for event in pygame.event.get():
             if event.type == pygame.QUIT or keys[pygame.K_ESCAPE]:
@@ -49,7 +50,7 @@ def main():
                 return
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1 and clicked:
-                    debug_menu.click(mouse, clicked)
+                    debug_menu.click(clicked - world_offset, mouse - world_offset)
                     clicked = False
                 if event.button == 3 and DEBUG_MODE:
                     clicked = mouse
@@ -62,13 +63,9 @@ def main():
         grid.draw(world)
         for piece in pieces:
             piece.draw(world)
-        world_rect = world.get_rect( bottomright = screen.get_size() )
-        screen.blit(world, world_rect)
 
         # Side bar rendering
         side_bar.fill(RAND_BLUE())
-        side_bar_rect = side_bar.get_rect( bottomleft = (0, screen.get_height()) )
-        screen.blit(side_bar, side_bar_rect)
         
         # debug screen
         if DEBUG_MODE:
@@ -79,9 +76,13 @@ def main():
             debug_screen_rect = debug_screen.get_rect( bottomleft = (0, screen.get_height()) )
             screen.blit(debug_screen, debug_screen_rect)
         if clicked:
-            debug_menu.draw(screen, clicked, mouse)
+            debug_menu.draw(world, clicked - world_offset, mouse - world_offset)
 
         # Show on screen
+        world_rect = world.get_rect( bottomright = screen.get_size() )
+        screen.blit(world, world_rect)
+        side_bar_rect = side_bar.get_rect( bottomleft = (0, screen.get_height()) )
+        screen.blit(side_bar, side_bar_rect)
         pygame.display.flip()
 
         # Update clock
