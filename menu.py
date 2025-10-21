@@ -8,6 +8,7 @@ class Menu:
         self.back = pygame.Surface(self.size)
         self.lenght = len(buttons_settings) 
         self.buttons = []
+        self.corner_offset = pygame.Vector2(0,0)
 
         
         offset = 5
@@ -27,18 +28,24 @@ class Menu:
             return
 
         self.back.fill(BEIGE)
-        for button in self.buttons:
-            button.draw(self.back, mouse - position)
         
         if position[0] + self.size[0] <= container.get_width():
             if position[1] + self.size[1] <= container.get_height():
                 back_rect = self.back.get_rect(topleft = position)
+                self.corner_offset = pygame.Vector2(0,0)
             else:
                 back_rect = self.back.get_rect(bottomleft = position)
+                self.corner_offset = pygame.Vector2(0,self.size[1])
         else:
             if position[1] + self.size[1] <= container.get_height():
                 back_rect = self.back.get_rect(topright = position)
+                self.corner_offset = pygame.Vector2(self.size[0],0)
             else:
                 back_rect = self.back.get_rect(bottomright = position)
+                self.corner_offset = pygame.Vector2(self.size[0],self.size[1])
+        
+        
+        for button in self.buttons:
+            button.draw(self.back, mouse - position + self.corner_offset)
 
         container.blit(self.back, back_rect)

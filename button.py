@@ -17,6 +17,7 @@ class Button:
     def click(self, clicked: pygame.Vector2, position: pygame.Vector2):
         if abs(clicked.x - self.position.x) < self.size[0] / 2 and abs(clicked.y - self.position.y) < self.size[1] / 2:
             self.function(position)
+            
 
 
     def draw(self, container: pygame.Surface, mouse: pygame.Vector2):
