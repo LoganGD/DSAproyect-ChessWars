@@ -4,29 +4,23 @@ from constants import *
 class Grid:
     def __init__(self, screen: pygame.Surface):
         # get dimensions
-        self.square_size = screen.get_height() / GRID_HEIGHT
-        self.grid_width = (screen.get_width() - SIDE_BAR_MIN_WIDTH) // self.square_size
-        self.grid_width = int(self.grid_width)
-        self.grid_height = GRID_HEIGHT
-        self.width = self.grid_width * self.square_size
-        # create the grid
-        self.cells = [[] for _ in range(self.grid_width)]
-
-        for i in range(self.grid_width):
-            for j in range(self.grid_height):
-                self.cells[i].append(Square(i,j))
-
-    def draw(self, world: pygame.Surface):
-        for i in range(self.grid_width):
-            for j in range(self.grid_height):
-                self.cells[i][j].draw(world, self.square_size)
+        self.square_size = screen.get_height() // GRID_HEIGHT
+        self.width = self.square_size * GRID_WIDTH
+        self.offset = pygame.Vector2(screen.get_width() - self.width, 0)
         
+        # create the grid
+        self.cells = [[] for _ in range(GRID_WIDTH)]
+        
+        for i in range(GRID_WIDTH):
+            for j in range(GRID_HEIGHT):
+                position = pygame.Vector2(i,j)
+                self.cells[i].append(Square(screen, position, self.square_size, self.offset))
+
 class Square:
-    def __init__(self, pos_x: float, pos_y: float):
-        self.position = pygame.Vector2(pos_x, pos_y)
-        self.color = BLACK if ( pos_x + pos_y ) % 2 else WHITE
-    
-    def draw(self, world: pygame.Surface, square_size: float):
-        pos_x,pos_y = self.position * square_size
-        draw_position = (pos_x, pos_y, square_size, square_size)
-        pygame.draw.rect(world, self.color, draw_position)
+    def __init__(self, screen: pygame.Surface, position: pygame.Vector2, square_size: int, offset: pygame.Vector2):
+        self.position = position
+        self.square_size = square_size
+        self.color = BLACK if sum(position) % 2 else WHITE
+        position = position * square_size + offset
+        draw_position = (*position, square_size, square_size)
+        pygame.draw.rect(screen, self.color, draw_position)

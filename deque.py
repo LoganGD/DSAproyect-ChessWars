@@ -25,6 +25,7 @@ class Deque:
     def __init__(self):
         self.__front = None
         self.__back = None
+        self.__size = 0
 
 
     def front(self):
@@ -35,6 +36,7 @@ class Deque:
     
     def push_front(self, data):
         new_node = Node(data)
+        self.__size += 1
 
         if not self.__front:
             self.__front = self.__back = new_node
@@ -49,6 +51,8 @@ class Deque:
     def pop_front(self):
         if self.__front == None:
             raise Exception("pop_front() from empty deque") 
+        
+        self.__size -= 1
         
         if not self.__front.get_prev():
             self.__front = self.__back = None
@@ -65,6 +69,7 @@ class Deque:
     
     def push_back(self, data):
         new_node = Node(data)
+        self.__size += 1
 
         if not self.__front:
             self.__front = self.__back = new_node
@@ -79,6 +84,8 @@ class Deque:
         if not self.__back:
             raise Exception("pop_back() from empty deque") 
         
+        self.__size -= 1
+
         if not self.__back.get_next():
             self.__back = self.__front = None
             return 
@@ -97,3 +104,6 @@ class Deque:
         while current_node:
             yield current_node.get_data()
             current_node = current_node.get_prev()
+
+    def __len__(self):
+        return self.__size
