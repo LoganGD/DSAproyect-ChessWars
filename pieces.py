@@ -1,16 +1,27 @@
 import pygame
 from constants import *
+from deque import Deque
+from grid import Grid
 
 class Piece:
-    def __init__(self, position: tuple[int], is_enemy: bool = False):
+    def init(screen: pygame.Surface, grid: Grid, pieces_deque: Deque, square_size: int, offset: pygame.Vector2):
+        Piece.screen = screen
+        Piece.grid = grid
+        Piece.pieces_deque = pieces_deque
+        Piece.square_size = square_size
+        Piece.offset = offset
+
+    def __init__(self, position: tuple[int], team: int = 0):
         self.pieces_deque.push_back(self)
         self.position = pygame.Vector2(position)
-        self.is_enemy = is_enemy
-        self.piece_color = BLACK if self.is_enemy else WHITE
-        self.drawed = False
+        self.team = team
+        self.piece_color = [WHITE,BLACK][team]
+        self.stamina = 5
+        self.level = 0
+        self.draw()
 
     def draw(self):
-        piece_offset = self.offset + pygame.Vector2(self.square_size, self.square_size) / 2
+        piece_offset = self.offset + pygame.Vector2(self.square_size) / 2
         position = self.position * self.square_size + piece_offset
         
         font = pygame.font.Font(FONT_STYLE, FONT_SIZE)
@@ -20,19 +31,17 @@ class Piece:
         back = pygame.Surface((55,20))
         back.fill(GRAY)
         back.blit(text, text_rect)
-        back_rect = back.get_rect(center=position)
+        back_rect = back.get_rect(center = position)
         self.screen.blit(back, back_rect)
 
-        self.drawed = True
-    
-    def clear(self):
+    def undraw(self):
         color = BLACK if sum(self.position) % 2 else WHITE
         position = self.position * self.square_size + self.offset
         draw_position = (*position, self.square_size, self.square_size)
         pygame.draw.rect(self.screen, color, draw_position)
 
-        self.drawed = False
-
+    def tick(self):
+        pass
 
 class Pawn(Piece):
     pass

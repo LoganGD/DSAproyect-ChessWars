@@ -12,7 +12,6 @@ pip install -r requirements.txt
 ```
  - Python 3.13 (or similar)
  - pygame
- - import https://github.com/pvigier/perlin-numpy
 
 ## Running
 
