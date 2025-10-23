@@ -4,7 +4,7 @@ from deque import Deque
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from grid import Grid    
+    from grid import Grid
 
 
 class Piece:
@@ -18,7 +18,7 @@ class Piece:
         self.pieces_deque.push_back(self)
         self.grid.set(position, self)
 
-        self.position = pygame.Vector2(position)
+        self.position = position
         self.team = team
         self.piece_color = BLACK if team else WHITE
         self.stamina = 5
@@ -28,7 +28,7 @@ class Piece:
 
     def draw(self):
         piece_offset = self.offset + pygame.Vector2(self.square_size) / 2
-        position = self.position * self.square_size + piece_offset
+        position = pygame.Vector2(self.position) * self.square_size + piece_offset
         
         font = pygame.font.Font(FONT_STYLE, FONT_SIZE)
         piece_name = type(self).__name__
@@ -49,13 +49,25 @@ class Piece:
         pygame.draw.rect(self.screen, color, draw_position)
 
 
+    def delete(self):
+        # self.pieces_deque.delete(self)
+        self.grid.set(self.position, None)
+        self.grid.clear(self.position)
+
+
     def tick(self):
         pass
 
 
 
 class Pawn(Piece):
-    pass
+    def tick(self):
+        self.position
+
+        piece = self.grid.get((0,0))
+        if piece:
+            piece.delete()
+
 
 class Rook(Piece):
     pass

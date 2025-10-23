@@ -44,6 +44,8 @@ class Console:
                 self.output += " created in " + cmds[2] + " " + cmds[3]
         
         if len(cmds) > 0 and cmds[0] == "nuke":
+            if len(cmds) > 1 and cmds[1] == "2":
+                raise Exception("NUKE")
             while len(piece.pieces_deque) > 0:
                 piece.pieces_deque.front().undraw()
                 piece.pieces_deque.pop_front()

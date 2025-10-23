@@ -6,6 +6,7 @@ from pieces import Piece
 class Grid:
     def __init__(self, surface: pygame.Surface):
         # get dimensions
+        self.surface = surface
         self.square_size = surface.get_height() // GRID_HEIGHT
         self.width = self.square_size * GRID_WIDTH
         self.offset = pygame.Vector2(surface.get_width() - self.width, 0)
@@ -20,8 +21,12 @@ class Grid:
                         position, self.square_size, self.offset)
                 self.cells[i].append(square)
 
+
+    def clear(self, position: tuple[int, int]):
+        self.cells[position[0]][position[1]].clear(self.surface)
+
     
-    def set(self, position: tuple[int, int], piece: 'Piece'):
+    def set(self, position: tuple[int, int], piece: 'Piece | None'):
         if self.cells[position[0]][position[1]].piece:
             raise Exception(f'There is already a piece at f{position}')
 
