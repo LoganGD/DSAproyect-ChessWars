@@ -1,14 +1,17 @@
+from typing import TypeVar, Generic
 
-class Node:
-    def __init__(self, data):
+T = TypeVar("T")
+
+class Node(Generic[T]):
+    def __init__(self, data: T):
         self.__data  = data
         self.__next = None
         self.__prev = None
     
-    def set_next(self, next):
+    def set_next(self, next: 'Node[T] | None'):
         self.__next = next
 
-    def set_prev(self, prev):
+    def set_prev(self, prev: 'Node[T] | None'):
         self.__prev = prev
 
     def get_next(self):
@@ -21,7 +24,7 @@ class Node:
         return self.__data
 
 
-class Deque:
+class Deque(Generic[T]):
     def __init__(self):
         self.__front = None
         self.__back = None
@@ -34,7 +37,8 @@ class Deque:
         
         return self.__front.get_data()
     
-    def push_front(self, data):
+
+    def push_front(self, data: T):
         new_node = Node(data)
         self.__size += 1
 
@@ -53,21 +57,23 @@ class Deque:
             raise Exception("pop_front() from empty deque") 
         
         self.__size -= 1
-        
-        if not self.__front.get_prev():
-            self.__front = self.__back = None
-            return 
-        
         self.__front = self.__front.get_prev()
-        self.__front.set_next(None)
+        
+        if self.__front:
+            self.__front.set_next(None)
+            return
+        
+        self.__back = None
+
 
     def back(self):
-        if not self.__front:
+        if not self.__back:
             raise Exception("back() from empty deque") 
         
         return self.__back.get_data()
     
-    def push_back(self, data):
+
+    def push_back(self, data: T):
         new_node = Node(data)
         self.__size += 1
 
@@ -80,18 +86,20 @@ class Deque:
 
         self.__front = new_node
     
+
     def pop_back(self):
         if not self.__back:
             raise Exception("pop_back() from empty deque") 
         
         self.__size -= 1
-
-        if not self.__back.get_next():
-            self.__back = self.__front = None
-            return 
-        
         self.__back = self.__back.get_next()
-        self.__back.set_prev(None)
+        
+        if self.__back:
+            self.__back.set_prev(None)
+            return
+        
+        self.__front = None
+
 
     def __repr__(self):
         print("[", end="")
@@ -99,11 +107,13 @@ class Deque:
             print(value, end=",")
         return "\b]" if self.__front else "]"
 
+
     def __iter__(self):
         current_node = self.__front
         while current_node:
             yield current_node.get_data()
             current_node = current_node.get_prev()
+
 
     def __len__(self):
         return self.__size

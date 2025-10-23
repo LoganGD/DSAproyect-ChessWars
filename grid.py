@@ -1,5 +1,7 @@
 import pygame
 from constants import *
+from pieces import Piece
+
 
 class Grid:
     def __init__(self, surface: pygame.Surface):
@@ -9,7 +11,7 @@ class Grid:
         self.offset = pygame.Vector2(surface.get_width() - self.width, 0)
 
         # create the grid
-        self.cells = [[] for _ in range(GRID_WIDTH)]
+        self.cells: list[list[Square]] = [[] for _ in range(GRID_WIDTH)]
         
         for i in range(GRID_WIDTH):
             for j in range(GRID_HEIGHT):
@@ -17,6 +19,19 @@ class Grid:
                 square = Square(surface, 
                         position, self.square_size, self.offset)
                 self.cells[i].append(square)
+
+    
+    def set(self, position: tuple[int, int], piece: 'Piece'):
+        if self.cells[position[0]][position[1]].piece:
+            raise Exception(f'There is already a piece at f{position}')
+
+        self.cells[position[0]][position[1]].piece = piece
+    
+
+    def get(self, position: tuple[int, int]):
+        return self.cells[position[0]][position[1]].piece
+
+
 
 class Square:
     def __init__(
@@ -31,7 +46,8 @@ class Square:
         size = pygame.Vector2(square_size)
         self.rect = pygame.Rect(*adjusted_position, *size)
         self.clear(surface)
+        self.piece: Piece | None = None
 
 
-    def clear(self, surface):
+    def clear(self, surface: pygame.Surface):
         pygame.draw.rect(surface, self.color, self.rect)

@@ -26,16 +26,22 @@ class Console:
         self.output = ""
 
         if len(cmds) >= 3:
-            if cmds[0] == "create" and cmds[1] in pieces_dict and cmds[2].isdigit() and cmds[3].isdigit():
-                if int(cmds[2]) < GRID_WIDTH and int(cmds[3]) < GRID_HEIGHT:
-                    position = int(cmds[2]), int(cmds[3])
-                    is_enemy = int(len(cmds) > 4 and cmds[4] == "enemy")
-                    pieces_dict[cmds[1]](position, is_enemy)
-                    if is_enemy:
-                        self.output = "enemy "
-                    self.output += cmds[1] + " created in " + cmds[2] + " " + cmds[3]
+            if all([
+                cmds[0] == "create",
+                cmds[1] in pieces_dict,
+                cmds[2].isdigit(),
+                cmds[3].isdigit(),
+                int(cmds[2]) < GRID_WIDTH,
+                int(cmds[3]) < GRID_HEIGHT,
+            ]):
+                position = int(cmds[2]), int(cmds[3])
+                is_enemy = int(len(cmds) > 4 and cmds[4] == "black")
+                pieces_dict[cmds[1]](position, is_enemy)
+                if is_enemy:
+                    self.output = "black " + cmds[1]
                 else:
-                    self.output = cmds[1] + " created, but it fell from the board"
+                    self.output = "white " + cmds[1]
+                self.output += " created in " + cmds[2] + " " + cmds[3]
         
         if len(cmds) > 0 and cmds[0] == "nuke":
             while len(piece.pieces_deque) > 0:

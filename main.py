@@ -1,8 +1,8 @@
 import pygame
 from constants import *
-from grid import Grid
 from pieces import *
 from deque import Deque
+from grid import Grid
 from console import Console
 
 
@@ -16,12 +16,23 @@ def main():
     screen.fill(PURPLE)
     grid = Grid(screen)
     
+    # debugging console
+    position = 10, screen.get_height() - 110
+    size = grid.offset.x - 20, 100
+    console_rect = pygame.Rect(*position, *size)
+    console = Console(screen, console_rect)
+
     # initialize pieces structures
-    pieces_deque = Deque()
-    Piece.init(screen, grid, pieces_deque, grid.square_size, grid.offset)
+    pieces_deque = Deque[Piece]()
+    Piece.screen = screen
+    Piece.screen = screen
+    Piece.grid = grid
+    Piece.pieces_deque = pieces_deque
+    Piece.square_size = grid.square_size
+    Piece.offset = grid.offset
 
     # temporary piece placement
-    order = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
+    order: list[type[Piece]] = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
     for i, piece in enumerate(order):
         piece((0,i+2), team = 0)
         Pawn((1,i+2), team = 0)
@@ -31,6 +42,7 @@ def main():
     # variables
     current_team = 0
     turn_timer = 0
+    fps_timer = 0
     timer = 0
     dt,fps = 0,0
 
@@ -58,13 +70,6 @@ def main():
                     inputs += event.unicode
                     if inputs[-3:] == DEBUG_CODE:
                         debug = True
-                        fps_timer = 0
-                        position = 10, screen.get_height() - 110
-                        size = grid.offset.x - 20, 100
-
-                        console_rect = pygame.Rect(*position, *size)
-                        console = Console(screen, console_rect)
-                        console.show_fps(fps)
                         console.draw()
 
         # piece turns
@@ -88,6 +93,7 @@ def main():
         dt = clock.tick(0) # limit FPS (0 for unlimited)
         timer += dt / 1000
         fps += (clock.get_fps() - fps) * dt / 1000
+
 
 
 if __name__ == "__main__":
