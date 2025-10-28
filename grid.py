@@ -23,10 +23,10 @@ class Grid:
 
 
     def clear(self, position: tuple[int, int]):
-        self.cells[position[0]][position[1]].clear(self.surface)
-
+        self.cells[position[0]][position[1]].draw(self.surface)
+        self.cells[position[0]][position[1]].piece = None
     
-    def set(self, position: tuple[int, int], piece: 'Piece | None'):
+    def set(self, position: tuple[int, int], piece: Piece):
         if self.cells[position[0]][position[1]].piece:
             raise Exception(f'There is already a piece at f{position}')
 
@@ -47,12 +47,17 @@ class Square:
         offset: pygame.Vector2
     ):
         self.color = BLACK if sum(position) % 2 else WHITE
-        adjusted_position = position * square_size + offset
-        size = pygame.Vector2(square_size)
-        self.rect = pygame.Rect(*adjusted_position, *size)
-        self.clear(surface)
         self.piece: Piece | None = None
 
+        adjusted_position = position * square_size + offset
+        size = pygame.Vector2(square_size)
 
-    def clear(self, surface: pygame.Surface):
-        pygame.draw.rect(surface, self.color, self.rect)
+        self.rect = pygame.Rect(*adjusted_position, *size)
+        self.base = pygame.Surface(size)
+        self.base.fill(self.color)
+
+        self.draw(surface)
+
+
+    def draw(self, surface: pygame.Surface):
+        surface.blit(self.base, self.rect)
