@@ -4,6 +4,7 @@ from pieces import *
 from deque import Deque
 from grid import Grid
 from console import Console
+from button import Button
 
 
 def main():
@@ -24,12 +25,35 @@ def main():
 
     # initialize pieces structures
     pieces_deque = Deque[Piece]()
-    Piece.screen = screen
+    orders = Deque[str]()
     Piece.screen = screen
     Piece.grid = grid
     Piece.pieces_deque = pieces_deque
+    # Piece.orders = orders
     Piece.square_size = grid.square_size
     Piece.offset = grid.offset
+
+    # create buttons
+    buttons: list[Button] = []
+    Button.buttons_list = buttons
+
+    size = 100, 50
+
+    position = 50, 50    
+    button_rect = pygame.Rect(*position, *size)
+    button = Button(screen, button_rect, "Attack", lambda:orders.push_back("Attack"))
+    
+    position = 160, 50
+    button_rect = pygame.Rect(*position, *size)
+    button = Button(screen, button_rect, "Defend", lambda:orders.push_back("Defend"))
+
+    position = 50, 110
+    button_rect = pygame.Rect(*position, *size)
+    button = Button(screen, button_rect, "Opt 1", lambda:orders.push_back("Opt 1"))
+    
+    position = 160, 110
+    button_rect = pygame.Rect(*position, *size)
+    button = Button(screen, button_rect, "Opt 2", lambda:orders.push_back("Opt 2"))
 
     # temporary piece placement
     order: list[type[Piece]] = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
@@ -50,12 +74,19 @@ def main():
     debug = False
     
     while True:
+        mouse = pygame.Vector2(pygame.mouse.get_pos())
+
         for event in pygame.event.get():
             # close the window
             if event.type == pygame.QUIT:
                 pygame.quit()
                 return
             
+            # mouse click
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                for button in buttons:
+                    button.click(mouse)
+
             # keyboard keys
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
@@ -71,6 +102,10 @@ def main():
                     if inputs[-3:] == DEBUG_CODE:
                         debug = True
                         console.draw()
+
+        # buttons
+        for button in buttons:
+            button.draw(mouse)
 
         # piece turns
         if timer - turn_timer > TIMER_SECONDS:

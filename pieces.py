@@ -23,6 +23,18 @@ class Piece:
         self.piece_color = BLACK if team else WHITE
         self.stamina = 5
         self.level = 0
+
+        # preparing base rect
+        font = pygame.font.Font(FONT_STYLE, FONT_SIZE)
+        piece_name = type(self).__name__
+        text = font.render(piece_name, True, self.piece_color, GRAY)
+        text_rect = text.get_rect(center = (55 / 2, 20 / 2))
+        
+        self.back = pygame.Surface((55,20))
+        self.back.fill(GRAY)
+        self.back.blit(text, text_rect)
+
+        # first draw
         self.draw()
 
 
@@ -30,28 +42,11 @@ class Piece:
         piece_offset = self.offset + pygame.Vector2(self.square_size) / 2
         position = pygame.Vector2(self.position) * self.square_size + piece_offset
         
-        font = pygame.font.Font(FONT_STYLE, FONT_SIZE)
-        piece_name = type(self).__name__
-        text = font.render(piece_name, True, self.piece_color, GRAY)
-        text_rect = text.get_rect(center = (55 / 2, 20 / 2))
-        
-        back = pygame.Surface((55,20))
-        back.fill(GRAY)
-        back.blit(text, text_rect)
-        back_rect = back.get_rect(center = position)
-        self.screen.blit(back, back_rect)
-
-
-    def undraw(self):
-        color = BLACK if sum(self.position) % 2 else WHITE
-        position = self.position * self.square_size + self.offset
-        draw_position = (*position, self.square_size, self.square_size)
-        pygame.draw.rect(self.screen, color, draw_position)
+        back_rect = self.back.get_rect(center = position)
+        self.screen.blit(self.back, back_rect)
 
 
     def delete(self):
-        # self.pieces_deque.delete(self)
-        self.grid.set(self.position, None)
         self.grid.clear(self.position)
 
 

@@ -9,6 +9,8 @@ class Console:
         self.input = ""
         self.output = ""
     
+        self.back = pygame.Surface(rect.size)
+        self.back.fill(BLACK)
     
     def process_key(self, key: int, unicode: str):
         if key == pygame.K_BACKSPACE:
@@ -47,7 +49,7 @@ class Console:
             if len(cmds) > 1 and cmds[1] == "2":
                 raise Exception("NUKE")
             while len(piece.pieces_deque) > 0:
-                piece.pieces_deque.front().undraw()
+                piece.pieces_deque.front().delete()
                 piece.pieces_deque.pop_front()
             self.output = "nuked"
         
@@ -63,7 +65,7 @@ class Console:
     
 
     def draw(self):
-        pygame.draw.rect(self.surface, BLACK, self.rect) # fill black
+        self.surface.blit(self.back, self.rect)
         
         font = pygame.font.Font(FONT_STYLE, FONT_SIZE)
         offset = pygame.Vector2(self.rect.topleft)
