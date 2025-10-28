@@ -1,6 +1,7 @@
 import pygame
 from constants import *
 from deque import Deque
+from pqueue import Pqueue
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -21,8 +22,6 @@ class Piece:
         self.position = position
         self.team = team
         self.piece_color = BLACK if team else WHITE
-        self.stamina = 5
-        self.level = 0
         self.draw()
 
 
@@ -58,32 +57,142 @@ class Piece:
     def tick(self):
         pass
 
-
-
 class Pawn(Piece):
+    def __init__(self, position, team = 0):
+        super().__init__(position, team)
+        self.moves = [(1,0),(2,0),(1,1),(1,-1)]
+        self.stamina = 3
+        self.level = 0
+
     def tick(self):
-        self.position
 
-        piece = self.grid.get((0,0))
-        if piece:
-            piece.delete()
+        if self.stamina == 0:
+            self.stamina +=1
+            return
 
+        pos_x = self.position[0]
+        pos_y = self.position[1]
 
-class Rook(Piece):
-    pass
+        cells = Pqueue()
+        
+        for x in range(3):
+            if pos_x + x >= 0 and pos_x + x <=16 :
+                for y in range(-2,3):
+                    if pos_y + y <= 12 and pos_y + y>= 0:
+                        cells.add(0,(pos_x + x , pos_y + y))
+        
+        for x in range(3):
+            if pos_x + x >= 0 and pos_x + x <=16 :
+                for y in range(-2,3):
+                    if pos_y + y <= 12 and pos_y + y >= 0:
+                        piece = self.grid.get((pos_x + x ,pos_y + y ))
+                        if piece:
+                            for u,v in piece.moves:
+                                cells.change_priority((pos_x + x + u,pos_y + y +v), 0, -15)
+        
+        for x,y in self.moves:
+            if pos_x + x >=0 and pos_x + x <= 16 and pos_y + y >=0 and pos_y + y <= 12:
+                piece = self.grid.get((pos_x + x ,pos_y + y ))
+
+                if piece and abs(y)==1:
+                    cells.change_priority((pos_x + x ,pos_y + y ), 0, 25)
+                elif piece:
+                    cells.erase((pos_x + x ,pos_y + y ))
+                else:
+                    if pos_x + x +1 <= 16 and pos_y + y +1 <=12:
+                        if self.grid.get((pos_x + x ,pos_y + y +1)):
+                            cells.change_priority((pos_x + x ,pos_y + y ), 0, 10)
+
+                        if pos_y + y -1 >=0:   
+                            if self.grid.get((pos_x + x ,pos_y + y -1)):
+                                cells.change_priority((pos_x + x ,pos_y + y ), 0, 10)
+        
+        if self.stamina <=1:
+            cells.change_priority((pos_x,pos_y),0,12)
+
+        for x in range(3):
+            if pos_x + x >= 0 and pos_x + x <=16 :
+                for y in range(-2,3):
+                    if (x,y) not in self.moves:
+                        cells.erase((x,y))
+
+        top = cells.top()   
+
+        if top == (pos_x, pos_y):
+            self.stamina +=1   
+        else:
+            self.position = top  
+            piece = self.grid.get(self.position)
+            if piece:
+                piece.delete()
 
 class Knight(Piece):
-    pass
+    def __init__(self, position, team = 0):
+        super().__init__(position, team)
+        self.moves = []
+    
+        for i in range(-2,3):
+            for j in range(-2,3):
+                if abs(i)+abs(j)==3:
+                    self.moves.append((i,j))
+
+        self.stamina = 4
+        self.level = 0
 
 class Bishop(Piece):
-    pass
+    def __init__(self, position, team = 0):
+        super().__init__(position, team)
+        self.moves = []
+        
+        for i in range(-3,4):
+            for j in range(-3,4):
+                if abs(i)==abs(j) and i!=0:
+                    self.moves.append((i,j))
+
+        self.stamina = 4
+        self.level = 0
+
+class Rook(Piece):
+    def __init__(self, position, team = 0):
+        super().__init__(position, team)
+        self.moves = []
+        for i in range(-3,4):
+            if i!=0:
+                self.moves.append((0,i))
+                self.moves.append((i,0))
+
+        self.stamina = 5
+        self.level = 0
+
 
 class Queen(Piece):
-    pass
+    def __init__(self, position, team = 0):
+        super().__init__(position, team)
+        self.moves = []
+        for i in range(-3,4):
+            if i!=0:
+                self.moves.append((0,i))
+                self.moves.append((i,0))
+        
+        for i in range(-3,4):
+            for j in range(-3,4):
+                if abs(i)==abs(j) and i!=0:
+                    self.moves.append((i,j))
+
+        self.stamina = 6
+        self.level = 0
+
 
 class King(Piece):
-    pass
-
+    def __init__(self, position, team = 0):
+        super().__init__(position, team)
+        self.moves = []
+        for i in range(-1,2):
+            for j in range(-1,2):
+                if abs(i)+abs(j) > 0:
+                    self.moves.append((i,j))
+        self.stamina = 4
+        self.level = 0
 
 
 pieces_dict: dict[str, type[Piece]] = dict()

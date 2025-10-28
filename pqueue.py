@@ -98,10 +98,10 @@ class Pqueue:
         self.__bubble_down(self._root)
 
     def top(self):
-        return self._root
+        return self._root.get_data()
 
-    def erase(self, key):
-        node = self.__find(self._root, key)
+    def erase(self, data):
+        node = self.__find(self._root, data)
         last_node = self.__get_last_node()
         if node:
             last_node.swap(node)
@@ -109,27 +109,31 @@ class Pqueue:
             self.__bubble_up(node)
             self.__bubble_down(node)
 
-    def change_priority(self, old_key, new_key):
-        node = self.__find(self._root, old_key)
+    def change_priority(self, data, new_key, dif=None):
+        node = self.__find(self._root, data)
         if not node:
             return 
-        node.set_key(new_key)
+        
+        if not dif:
+            node.set_key(new_key)
+        else:
+            node.set_key(node.get_key()+dif)
 
         self.__bubble_up(node)
         self.__bubble_down(node)
 
-    def __find(self,node:Node,key):
+    def __find(self,node:Node,data):
         if not node:
             return None
             
-        if node.get_key() == key:
+        if node.get_data() == data:
             return node
         
-        left = self.__find(node.get_left(), key)
+        left = self.__find(node.get_left(), data)
 
         if left:
             return left
-        return self.__find(node.get_right(), key)
+        return self.__find(node.get_right(), data)
 
     def __bubble_up(self, node:Node):
         while node.get_father():
@@ -194,6 +198,9 @@ class Pqueue:
     def __repr__(self):
         self.__recursive_repr(self._root)
         return ""
+
+def main():
+    pass
 
 if __name__ == "__main__":
     main()
