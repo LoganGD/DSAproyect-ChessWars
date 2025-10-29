@@ -5,6 +5,7 @@ from deque import Deque
 from grid import Grid
 from console import Console
 from button import Button
+from events import create_default
 
 
 def main():
@@ -33,6 +34,10 @@ def main():
     Piece.square_size = grid.square_size
     Piece.offset = grid.offset
 
+
+    global time_speed
+    time_speed = 0
+
     # create buttons
     buttons: list[Button] = []
     Button.buttons_list = buttons
@@ -49,19 +54,27 @@ def main():
 
     position = 50, 110
     button_rect = pygame.Rect(*position, *size)
-    button = Button(screen, button_rect, "Opt 1", lambda:orders.push_back("Opt 1"))
+    button = Button(screen, button_rect, "Opt 3", lambda:orders.push_back("Opt 3"))
     
     position = 160, 110
     button_rect = pygame.Rect(*position, *size)
-    button = Button(screen, button_rect, "Opt 2", lambda:orders.push_back("Opt 2"))
+    button = Button(screen, button_rect, "Opt 4", lambda:orders.push_back("Opt 4"))
+
+    def setSpeed(speed: int):
+        global time_speed
+        time_speed = speed
+
+    position = 50, 170
+    button_rect = pygame.Rect(*position, *size)
+    button = Button(screen, button_rect, "Pause", lambda:setSpeed(0))
+    
+    position = 160, 170
+    button_rect = pygame.Rect(*position, *size)
+    button = Button(screen, button_rect, "Continue", lambda:setSpeed(1))
 
     # temporary piece placement
-    order: list[type[Piece]] = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
-    for i, piece in enumerate(order):
-        piece((0,i+2), team = 0)
-        Pawn((1,i+2), team = 0)
-        Pawn((14,i+2), team = 1)
-        piece((15,i+2), team = 1)
+    # create_default(0)
+    # create_default(1)
 
     # variables
     current_team = 0
@@ -108,7 +121,7 @@ def main():
             button.draw(mouse)
 
         # piece turns
-        if timer - turn_timer > TIMER_SECONDS:
+        if time_speed and timer - turn_timer > TIMER_SECONDS:
             turn_timer = timer
 
             for piece in pieces_deque:

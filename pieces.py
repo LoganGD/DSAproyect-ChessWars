@@ -15,6 +15,8 @@ class Piece:
     square_size: int
     offset: pygame.Vector2
 
+    moves: list[tuple[int, int]]
+
     def __init__(self, position: tuple[int, int], team: int = 0):
         self.pieces_deque.push_back(self)
         self.grid.set(position, self)
@@ -46,8 +48,13 @@ class Piece:
         self.screen.blit(self.back, back_rect)
 
 
+    def undraw(self):
+        self.grid.clear(self.position)
+
+
     def delete(self):
         self.grid.clear(self.position)
+
 
 
     def tick(self):
@@ -110,17 +117,20 @@ class Pawn(Piece):
             if pos_x + x >= 0 and pos_x + x <=16 :
                 for y in range(-2,3):
                     if (x,y) not in self.moves:
-                        cells.erase((x,y))
+                        cells.erase((pos_x + x, pos_y + y))
 
         top = cells.top()   
 
         if top == (pos_x, pos_y):
             self.stamina +=1   
         else:
-            self.position = top  
+            self.undraw()
+            self.position = top
             piece = self.grid.get(self.position)
             if piece:
                 piece.delete()
+            self.draw()
+        print(self.position)
 
 class Knight(Piece):
     def __init__(self, position, team = 0):

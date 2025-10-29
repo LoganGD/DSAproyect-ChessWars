@@ -1,6 +1,7 @@
 import pygame
 from constants import *
 from pieces import *
+from events import create_default
 
 class Console:
     def __init__(self, surface: pygame.Surface, rect: pygame.Rect):
@@ -27,15 +28,14 @@ class Console:
         self.input = ""
         self.output = ""
 
-        if len(cmds) >= 3:
-            if all([
-                cmds[0] == "create",
-                cmds[1] in pieces_dict,
-                cmds[2].isdigit(),
-                cmds[3].isdigit(),
-                int(cmds[2]) < GRID_WIDTH,
-                int(cmds[3]) < GRID_HEIGHT,
-            ]):
+        if len(cmds) >= 4:
+            if (cmds[0] == "create"
+                and cmds[1] in pieces_dict
+                and cmds[2].isdigit()
+                and cmds[3].isdigit()
+                and int(cmds[2]) < GRID_WIDTH
+                and int(cmds[3]) < GRID_HEIGHT
+            ):
                 position = int(cmds[2]), int(cmds[3])
                 is_enemy = int(len(cmds) > 4 and cmds[4] == "black")
                 pieces_dict[cmds[1]](position, is_enemy)
@@ -44,12 +44,20 @@ class Console:
                 else:
                     self.output = "white " + cmds[1]
                 self.output += " created in " + cmds[2] + " " + cmds[3]
+
+            if (cmds[0] == "event"
+                and cmds[1] == "create"
+                and cmds[2] == "default"
+                and cmds[3] in ("0","1")
+            ):
+                create_default(int(cmds[3]))
+                self.output = "default placement created"
         
         if len(cmds) > 0 and cmds[0] == "nuke":
             if len(cmds) > 1 and cmds[1] == "2":
                 raise Exception("NUKE")
             while len(piece.pieces_deque) > 0:
-                piece.pieces_deque.front().delete()
+                piece.pieces_deque.front().undraw()
                 piece.pieces_deque.pop_front()
             self.output = "nuked"
         
