@@ -12,6 +12,7 @@ class Piece:
         self.selected = False
         self.current_order = "Sleep"
 
+        self.adjacents =[(1,0),(0,1),(-1,0),(0,-1)]
         self.level = 1
 
         grid.set(self)
@@ -24,36 +25,84 @@ class Piece:
             return False
         return True
     
-
-    def empty(self, position):
-        return not self.valid(position) or not grid.get(position)
-
-
-    def enemy_piece(self, position):
+    
+    def has_piece(self, position: pygame.Vector2, vision: list[pygame.Vector2] = None, attack: bool = False):
         if not self.valid():
+            return False
+        if vision and position not in vision:
             return False
         piece = grid.get(position)
         if not piece:
             return False
-        return piece.team != self.team
-    
-    
-    def any_piece(self, position):
-        if not self.valid():
+        if not attack:
             return True
-        return grid.get(position)
+        return piece.team != self.team
 
 
     def get_vision(self):
-        pass
-    def get_moves(self, vision):
-        pass
+        vision =[]
+
+        pos_x = self.position[0]
+        pos_y = self.position[1]
+
+        for x , y in self.directions:
+            for i in range(1,self.range + 1):
+                if  self.valid(pos_x + x * i, pos_y + y * i):
+                    
+                    if not (pos_x + x * i, pos_y) in vision:
+                        vision.append((pos_x + x * i, pos_y + y))
+
+                    piece = self.grid.get(pos_x + x * i, pos_y + y * i)
+
+                    if piece:
+                        break
+                    else:
+                        for u,v in self.adjacents:
+                            if abs(x * i + u) <= self.range and abs(y * i + v) <= self.range:
+                                if not ((x * i + u, y * i + v)) in vision:
+                                    vision.append((x * i + u, y * i + v))
+        
+        return vision
+
+    
+    def get_moves(self, vision, attack):
+        moves = []
+        pos_x = self.position[0]
+        pos_y = self.position[1]
+        for x , y in self.directions:
+            for i in range(1, self.range + 1):
+                if  self.valid(pos_x + x * i, pos_y + y * i):
+                    if not (pos_x + x * i, pos_y + y * i) in vision:
+                        continue
+                    piece = self.grid.get((pos_x + x * i, pos_y + y * i))
+
+                    if not piece:
+                        moves.append((pos_x + x * i, pos_y + y * i))
+                        continue
+
+                    if not attack or piece.team != self.team:
+                        moves.append((pos_x + x * i, pos_y + y * i))
+                    
+                    break
+        if attack:
+            moves.append(self.position)
+        
+        return moves
+    
 
 
     def tick(self):
         name = self.__class__.__name__
+
+        vision = self.get_vision()
+        moves = self.get_moves(vision, True)
+
         print(name, self.team, self.current_order)
+        print(vision)
+        print(moves)
         # ^^^ debuging ^^^ 
+
+        return
 
         moves,vision = self.get_moves_and_vision()
 
@@ -127,5 +176,3 @@ class Piece:
 # 5. + Piezas potenciales a las que puedes proteger si te mueves ahi 
 # 6. casilla inicial += f(stamina)
 # 7. Recursos
-# es que justo pense en un caso
-# una torre no se quitaria del camino si esta protegiendo al rey

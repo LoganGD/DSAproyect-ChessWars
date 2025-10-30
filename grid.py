@@ -66,22 +66,28 @@ def init(screen: pygame.Surface, square_size: int, offset: int):
 
 
 def get(position: pygame.Vector2):
+    x,y = position
+    x = round(x)
+    y = round(y)
     if x < 0 and x >= GRID_WIDTH and y < 0 and y >= GRID_HEIGHT:
         raise Exception("out of bounds")
-    x,y = position
     return squares[x][y].piece
     
 def set(piece: Piece):
+    x,y = piece.position
+    x = round(x)
+    y = round(y)
     if x < 0 and x >= GRID_WIDTH and y < 0 and y >= GRID_HEIGHT:
         raise Exception("out of bounds")
-    x,y = piece.position
     squares[x][y].set(piece)
 
 
 def clear(piece: Piece):
+    x,y = piece.position
+    x = round(x)
+    y = round(y)
     if x < 0 and x >= GRID_WIDTH and y < 0 and y >= GRID_HEIGHT:
         raise Exception("out of bounds")
-    x,y = piece.position
     squares[x][y].set(None)
 
 

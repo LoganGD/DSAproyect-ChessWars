@@ -1,48 +1,68 @@
 from .piece import Piece
-from .piece import valid
-from constants import *
-from pqueue import Pqueue
 
 class Knight(Piece):
  
     def __init__(self, position, team = 0):
         super().__init__(position, team)
 
-        self.moves = []
-        self.vision =[]
-
-        # Vision of the piece
-
-        for x in range(3):
-            for y in range(-2,3):
-                continue
-
-        self.stamina = 3
-        self.level = 0
+        self.stamina = 4
+        self.max_stamina = 4
+        self.range = 1
+        self.directions = [(1,2),(-1,2),(1,-2),(-1,-2),(2,1),(2,-1),(-2,1),(-2,-1)]
 
         # Weights for different situations
-        self.value = 0
+        self.value = 6
         self.support = 0
         self.attacked = 0
         self.recomended_x = 0
         self.initiative = 0
     
-    def get_moves_and_vision(self):
-        moves = []
+    def get_vision(self):
+        
         vision =[]
 
         pos_x = self.position[0]
         pos_y = self.position[1]
 
-        #Moves
-        
-        # Vision of the piece
+        for x , y in self.directions:
+            for i in range(1,self.range + 1):
+                if  self.valid(pos_x + x * i, pos_y + y * i):
+                    
+                    if not (pos_x + x * i, pos_y) in vision:
+                        vision.append((pos_x + x * i, pos_y + y))
 
-        for x in range(-3,4):
-            for y in range(-3,4):
-                if valid(pos_x + x , pos_y + y):
-                    if (abs(x) <= 2 and abs(y) <=2) or abs(x) == 1 or abs(y) == 1:
-                        vision.append((x,y))
-    
-        return moves,vision
-            
+                    piece = self.grid.get(pos_x + x * i, pos_y + y * i)
+
+                    if piece:
+                        break
+                    else:
+                        for u,v in self.adjacents:
+                            if self.valid(x * i + u, y * i + v):
+                                if not ((x * i + u, y * i + v)) in vision:
+                                    vision.append((x * i + u, y * i + v))
+        
+        return vision
+                    
+    def get_moves(self, vision, attack):
+        moves = []
+        pos_x = self.position[0]
+        pos_y = self.position[1]
+        for x , y in self.directions:
+            for i in range(1, self.range + 1):
+                if  self.valid(pos_x + x * i, pos_y + y * i):
+                    if not (pos_x + x * i, pos_y + y * i) in vision:
+                        continue
+                    piece = self.grid.get((pos_x + x * i, pos_y + y * i))
+
+                    if not piece:
+                        moves.append((pos_x + x * i, pos_y + y * i))
+                        continue
+
+                    if not attack or piece.team != self.team:
+                        moves.append((pos_x + x * i, pos_y + y * i))
+                    
+                    break
+        if attack:
+            moves.append(self.position)
+        
+        return moves

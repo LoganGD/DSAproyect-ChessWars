@@ -1,4 +1,4 @@
-import grid
+import pygame
 from .piece import Piece
 
 class Pawn(Piece):
@@ -33,10 +33,10 @@ class Pawn(Piece):
         ]
 
         position = self.position + (d,0)
-        if not self.any_piece(position):
+        if not self.has_piece(position):
             position = self.position + (d*2,0)
             vision.append(position)
-            if not self.any_piece(position) and self.level == 3:
+            if not self.has_piece(position) and self.level == 3:
                 vision += [
                     self.position + (d*2,-1),
                     self.position + (d*2,1),
@@ -48,114 +48,29 @@ class Pawn(Piece):
         return [position for position in vision if self.valid(position)]
 
 
-    def get_moves(self, vision: list[tuple[int, int]], defend: bool):
-        pass
-
-
-        if self.enemy(position):
-            moves.append(position)
-        
-        position = self.position + (d,-1)
-        if self.enemy(position):
-            moves.append(position)
-        
-        position = self.position + (d,-1)
-        if self.enemy(position):
-            moves.append(position)
-        
-        position = self.position + (d,-1)
-        if self.enemy(position):
-            moves.append(position)
-        
-        position = self.position + (d,-1)
-        if self.enemy(position):
-            moves.append(position)
-        
-        position = self.position + (d,-1)
-        if self.enemy(position):
-            moves.append(position)
-# V V 3 3
-# P V V 3
-# V V 3 3
-
-# V V
-# P V E
-# V V
-
-# V V
-# P E
-# V V
-
-        vision = []
-        position = self.position + (0,0-10)
-
-    def get_moves_and_vision(self):
+    def get_moves(self, vision: list[pygame.Vector2], attack: bool):
         d = 1 if self.team == 0 else -1 # direction
 
-        # moves of the piece
         moves = []
 
         position = self.position + (d,-1)
-        if self.enemy(position):
+        if self.has_piece(position, vision, attack):
             moves.append(position)
 
         position = self.position + (d,1)
-        if self.enemy(position):
+        if self.has_piece(position, vision, attack):
             moves.append(position)
-        
+
         position = self.position + (d,0)
-        if not self.any_piece(position):
+        if not self.has_piece(position, vision):
             moves.append(position)
             
             position = self.position + (d*2,0)
-            if not self.any_piece(position):
+            if not self.has_piece(position, vision):
                 moves.append(position)
 
-
-
-
-#####Porque hay un get vision en piece?
-# Se ocupa prototipo? lo
-# es el prototipo, literalmente ya esta completo asi, no
-
-# Target
-#
-# (Bishop)
-#
-# Rook           Queen
-
-# Aqui queen no cosideraria ir a target porque lo ataca rook, ese es mi punto wey
-# pero esta cabron, porque y si si lo ve?
-
-# mira mira facil, si lo separamos
-# en vision y moves
-# entonces en este caso sacariamos Rook.get_moves(Queen.get_vision())
-# osea sacamos los movimientos de rook pero solo las piezas que ve queen puede bloquearlos
-# y el nomral seria Rook.get_moves(Rook.get_vision())
-# segun yo no, como no lo sacarias? no veo un caso imposible
-# si, pero puedes sacar la vision directamente (mas codigo)
-# ????
-# mas o menos, osea no ocupas moves para sacar vision, pero si lo haria mas facil
-
-#alv, va, osea y None es como todo el tablero o es un metodo aparte?
-#Nmms, he pero para sacar vision no ocupas get moves?
-#Como sacas vision?
-#Osea yo saco los movimientos y despues veo cuales son las adyacentes
-#Hmmm, como?
-#Osea creo que ya 
-#Hacer el get moves and vision pero solo retornar vision?
-#OKOK, entonces implemento get_moves(vision) y get_vision() ? si
-#Va
-
-#Nononon pq al sacar los movimientos de la torre este mismo marcaria que no puede ir
-#A target, osea como el get moves and vision
-#a nmms y si la reyna no ve el bishop?, soy de lento aprendizaje
-#Jajajajj
-#Mejor que sean amigos y que rook le dija a cuales va
-#Osea que es el parametro Queen.get_vision?
-
-
-
+        return [position for position in moves if self.valid(position)]
+        
 # Piece
 # + LV: capture_value >= self.value
 # + LV: Polvo magico (Cocaina)

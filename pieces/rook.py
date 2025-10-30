@@ -1,5 +1,4 @@
 from .piece import Piece
-from constants import *
 
 class Rook(Piece):
     def __init__(self, position, team = 0):
@@ -7,7 +6,6 @@ class Rook(Piece):
                  
         self.stamina = 5
         self.max_stamina = 5
-        self.level = 0
         self.range = 3
         self.directions = [(1,0),(0,1),(-1,0),(0,-1)]
 
@@ -29,25 +27,22 @@ class Rook(Piece):
             for i in range(1,self.range + 1):
                 if  self.valid(pos_x + x * i, pos_y + y * i):
                     
-                    vision.append((pos_x + x * i, pos_y + y))
+                    if not (pos_x + x * i, pos_y) in vision:
+                        vision.append((pos_x + x * i, pos_y + y))
+
                     piece = self.grid.get(pos_x + x * i, pos_y + y * i)
 
                     if piece:
                         break
-                    elif x != 0:
-                        if not (pos_x + x * i, pos_y + 1) in vision:
-                            vision.append((pos_x + x * i, pos_y + 1))
-                        if not (pos_x + x * i, pos_y - 1) in vision:
-                            vision.append((pos_x + x * i, pos_y - 1))
                     else:
-                        if not (pos_x + 1, pos_y + y * i) in vision:
-                            vision.append((pos_x + 1, pos_y + y * i))
-                        if not (pos_x - 1, pos_y + y * i) in vision:
-                            vision.append((pos_x - 1, pos_y + y * i))
+                        for u,v in self.adjacents:
+                            if abs(x * i + u) <= self.range and abs(y * i + v) <= self.range:
+                                if not ((x * i + u, y * i + v)) in vision:
+                                    vision.append((x * i + u, y * i + v))
         
         return vision
                     
-    def get_moves(self, vision, defend):
+    def get_moves(self, vision, attack):
         moves = []
         pos_x = self.position[0]
         pos_y = self.position[1]
@@ -62,12 +57,11 @@ class Rook(Piece):
                         moves.append((pos_x + x * i, pos_y + y * i))
                         continue
 
-                    if (piece.team == self.team) == defend:
-                        break
-                    else 
-    
-
-
-
-    def get_moves_and_vision(self):
-        pass
+                    if not attack or piece.team != self.team:
+                        moves.append((pos_x + x * i, pos_y + y * i))
+                    
+                    break
+        if attack:
+            moves.append(self.position)
+        
+        return moves
