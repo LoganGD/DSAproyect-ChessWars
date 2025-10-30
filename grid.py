@@ -65,7 +65,7 @@ def init(screen: pygame.Surface, square_size: int, offset: int):
     Pawn((14,6), 1)
 
 
-def get(position: pygame.Vector2):
+def get_piece(position: pygame.Vector2):
     x,y = position
     x = round(x)
     y = round(y)
@@ -73,7 +73,7 @@ def get(position: pygame.Vector2):
         raise Exception("out of bounds")
     return squares[x][y].piece
     
-def set(piece: Piece):
+def set_piece(piece: Piece):
     x,y = piece.position
     x = round(x)
     y = round(y)
@@ -91,6 +91,16 @@ def clear(piece: Piece):
     squares[x][y].set(None)
 
 
+def set_resource(position: tuple[int, int], resource: int):
+    x,y = position
+    x = round(x)
+    y = round(y)
+    if x < 0 and x >= GRID_WIDTH and y < 0 and y >= GRID_HEIGHT:
+        raise Exception("out of bounds")
+
+    pass
+
+
 def update(current_time: float, clicked: list | None, action: str | None):
     global turn_timer
     global turn_speed
@@ -101,7 +111,7 @@ def update(current_time: float, clicked: list | None, action: str | None):
         if x >= 0 and x < GRID_WIDTH and y >= 0 and y < GRID_HEIGHT:
             if squares[x][y].piece and squares[x][y].piece.team == 0:
                 squares[x][y].piece.selected = clicked[1]
-                set(squares[x][y].piece)
+                set_piece(squares[x][y].piece)
 
     if action == "Pause":
         turn_speed = 0
@@ -114,14 +124,14 @@ def update(current_time: float, clicked: list | None, action: str | None):
             if piece.selected:
                 piece.current_order = action
                 piece.selected = False
-                set(piece)
+                set_piece(piece)
     
     if (current_time - turn_timer) * turn_speed > 1:
         turn_timer = current_time
 
         for piece in Piece.deque[current_team]:
             piece.tick()
-        print()
+        # print()
 
         current_team = 1 - current_team
 

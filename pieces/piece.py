@@ -16,7 +16,7 @@ class Piece:
         self.adjacents = list(map(pygame.Vector2, self.adjacents))
         self.level = 1
 
-        grid.set(self)
+        grid.set_piece(self)
 
 
     def valid(self, position):
@@ -30,12 +30,17 @@ class Piece:
         return True
     
     
-    def has_piece(self, position: pygame.Vector2, vision: list[pygame.Vector2] = None, attack: bool = False):
+    def has_piece(
+        self, 
+        position: pygame.Vector2, 
+        vision: list[pygame.Vector2] = None, 
+        attack: bool = False
+    ):
         if not self.valid(position):
             return False
         if vision and position not in vision:
             return False
-        piece = grid.get(position)
+        piece = grid.get_piece(position)
         if not piece:
             return False
         if not attack:
@@ -48,32 +53,31 @@ class Piece:
                 
         for direction in self.directions:
             for i in range(1,self.range + 1):
-                if  self.valid(self.position + direction * i):
+                new_position = self.position + direction * i
+                if  self.valid(new_position):
                     
-                    if not self.position + direction * i in vision:
-                        vision.append(self.position + direction * i)
+                    if not new_position in vision:
+                        vision.append(new_position)
 
-                    piece = grid.get(self.position + direction * i)
-
-                    if piece:
+                    if grid.get_piece(new_position):
                         break
-                    else:
-                        for adjacent in self.adjacents:
-                            if self.valid(self.position + direction * i + adjacent):
-                                if not (self.position + direction * i + adjacent) in vision:
-                                    vision.append(self.position + direction * i + adjacent)
+                    
+                    for adjacent in self.adjacents:
+                        if self.valid(new_position + adjacent):
+                            if not (new_position + adjacent) in vision:
+                                vision.append(new_position + adjacent)
         
         return vision
 
     
-    def get_moves(self, vision, attack):
+    def get_moves(self, vision: list[pygame.Vector2], attack: bool):
         moves = []
         for direction in self.directions:
             for i in range(1, self.range + 1):
                 if  self.valid(self.position + direction * i):
                     if not (self.position + direction * i) in vision:
                         continue
-                    piece = grid.get(self.position + direction * i)
+                    piece = grid.get_piece(self.position + direction * i)
 
                     if not piece:
                         moves.append(self.position + direction * i)
@@ -96,10 +100,14 @@ class Piece:
         vision = self.get_vision()
         moves = self.get_moves(vision, True)
 
-        print(name, self.team, self.current_order)
-        print(vision)
-        print(moves)
+        # print(name, self.team, self.current_order)
+        # print(vision)
+        # print(moves)
+
         # ^^^ debuging ^^^ 
+
+
+        
 
         return
 

@@ -9,9 +9,11 @@ class King(Piece):
         self.stamina = 5
         self.max_stamina = 5
         self.range = 1
-        self.directions = [(1,0),(1,1),(1,-1),(0,1),(0,-1),(-1,1),(-1,0),(-1,-1)]
+        self.directions = [(1,0),(1,1),(1,-1),(0,1),
+                           (0,-1),(-1,1),(-1,0),(-1,-1)]
         self.directions = list(map(pygame.Vector2, self.directions))
-        self.adjacents =[(1,0),(1,1),(1,-1),(0,1),(0,-1),(-1,1),(-1,0),(-1,-1)]
+        self.adjacents =[(1,0),(1,1),(1,-1),(0,1),
+                         (0,-1),(-1,1),(-1,0),(-1,-1)]
         self.adjacents = list(map(pygame.Vector2, self.adjacents))
 
         # Weights for different situations

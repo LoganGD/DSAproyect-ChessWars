@@ -13,7 +13,7 @@ class Pawn(Piece):
         self.L3 = lambda:None
 
         # Weights for different situations
-        self.value = 5
+        self.value = 3
         self.support = 10
         self.attacked = -15
         self.recomended_x =10
@@ -32,11 +32,11 @@ class Pawn(Piece):
             self.position + (d,1),
         ]
 
-        position = self.position + (d,0)
-        if not self.has_piece(position):
-            position = self.position + (d*2,0)
-            vision.append(position)
-            if not self.has_piece(position) and self.level == 3:
+        new_position = self.position + (d,0)
+        if not self.has_piece(new_position):
+            new_position = self.position + (d*2,0)
+            vision.append(new_position)
+            if not self.has_piece(new_position) and self.level == 3:
                 vision += [
                     self.position + (d*2,-1),
                     self.position + (d*2,1),
@@ -53,21 +53,21 @@ class Pawn(Piece):
 
         moves = []
 
-        position = self.position + (d,-1)
-        if self.has_piece(position, vision, attack):
-            moves.append(position)
+        new_position = self.position + (d,-1)
+        if self.has_piece(new_position, vision, attack):
+            moves.append(new_position)
 
-        position = self.position + (d,1)
-        if self.has_piece(position, vision, attack):
-            moves.append(position)
+        new_position = self.position + (d,1)
+        if self.has_piece(new_position, vision, attack):
+            moves.append(new_position)
 
-        position = self.position + (d,0)
-        if not self.has_piece(position, vision):
-            moves.append(position)
+        new_position = self.position + (d,0)
+        if not self.has_piece(new_position, vision):
+            moves.append(new_position)
             
-            position = self.position + (d*2,0)
-            if not self.has_piece(position, vision):
-                moves.append(position)
+            new_position = self.position + (d*2,0)
+            if not self.has_piece(new_position, vision):
+                moves.append(new_position)
 
         return [position for position in moves if self.valid(position)]
         

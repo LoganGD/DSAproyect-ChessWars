@@ -2,6 +2,8 @@ import pygame
 import gui
 import grid
 from constants import *
+import random
+import event
 
 def main():
     pygame.init()
@@ -16,7 +18,7 @@ def main():
 
     # debug flag
     debug_mode = False
-    current_time = 0
+    current_time,dt = 0,0
     fps,prev_fps = 0,0
 
     while True:
@@ -34,13 +36,19 @@ def main():
 
 
         # updates main game and GUI
-        changes = grid.update(current_time, clicked, action)
+        changes = grid.update(current_time, clicked, action)        
         gui.update()
+
+
+        # random events
+        for _ in range(dt * grid.turn_speed):
+            if random.random() < 0.001:
+                event.random_event()
 
 
         # debugging things
         if debug_mode:
-            if abs(fps-prev_fps) > 3:
+            if abs(fps - prev_fps) > 2:
                 prev_fps = round(fps)
 
                 font = pygame.font.Font(FONT_STYLE, FONT_SIZE)
@@ -52,9 +60,9 @@ def main():
                 gui.screen.blit(text, text_rect)
 
         # limit FPS (0 for unlimited)
-        dt = clock.tick(0) / 1000
-        fps += (clock.get_fps() - fps) * dt
-        current_time += dt
+        dt = clock.tick(0)
+        fps += (clock.get_fps() - fps) * dt / 1000
+        current_time += dt / 1000
 
 
 if __name__ == "__main__":

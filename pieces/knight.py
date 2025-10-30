@@ -9,7 +9,8 @@ class Knight(Piece):
         self.stamina = 4
         self.max_stamina = 4
         self.range = 1
-        self.directions = [(1,2),(-1,2),(1,-2),(-1,-2),(2,1),(2,-1),(-2,1),(-2,-1)]
+        self.directions = [(1,2),(-1,2),(1,-2),(-1,-2),
+                           (2,1),(2,-1),(-2,1),(-2,-1)]
         self.directions = list(map(pygame.Vector2, self.directions))
 
         # Weights for different situations
