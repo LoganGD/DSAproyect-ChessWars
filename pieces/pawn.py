@@ -13,11 +13,11 @@ class Pawn(Piece):
         self.L3 = lambda:None
 
         # Weights for different situations
-        self.value = 5
-        self.support = 10
-        self.attacked = -9
-        self.recomended_x =10
-        self.initiative = 5
+        self.value = 4
+        self.support = 5
+        self.attacked = -2
+        self.recomended_x = 8
+        self.initiative = 3
         self.restore = 10
 
 
@@ -53,7 +53,7 @@ class Pawn(Piece):
     def get_moves(self, vision: list[pygame.Vector2], attack: bool):
         d = 1 if self.team == 0 else -1 # direction
 
-        moves = []
+        moves = [self.position]
 
         position = self.position + (d,-1)
         if self.has_piece(position, vision, attack):

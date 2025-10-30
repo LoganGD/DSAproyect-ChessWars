@@ -1,6 +1,6 @@
 import pygame
 from constants import *
-from pqueue import Pqueue
+from structures.pqueue import Pqueue 
 import grid
 
 class Piece:
@@ -11,7 +11,7 @@ class Piece:
         self.position = pygame.Vector2(position)
         self.team = team
         self.selected = False
-        self.current_order = "Sleep"
+        self.current_order = "Defend"
 
         self.adjacents =[(1,0),(0,1),(-1,0),(0,-1)]
         self.adjacents = list(map(pygame.Vector2, self.adjacents))
@@ -29,6 +29,9 @@ class Piece:
         if y < 0 or y >= GRID_HEIGHT:
             return False
         return True
+    
+    def delete(self):
+        self.deque[self.team].remove(self)
     
     
     def has_piece(self, position: pygame.Vector2, vision: list[pygame.Vector2] = None, attack: bool = False):
@@ -90,12 +93,10 @@ class Piece:
         return moves
     
 
-
     def tick(self):
-        name = self.__class__.__name__
-
-        vision = self.get_vision()
-        moves = self.get_moves(vision, True)
+        # name = self.__class__.__name__
+        # vision = self.get_vision()
+        # moves = self.get_moves(vision, True)
 
         # print(name, self.team, self.current_order)
         # print(vision)
@@ -104,7 +105,7 @@ class Piece:
 
         # return
         vision = self.get_vision()
-        moves = self.get_moves(vision, 1)
+        moves = self.get_moves(vision, attack = True)
 
         if self.stamina == 0:
             self.stamina +=1
@@ -112,20 +113,20 @@ class Piece:
 
         cells = Pqueue()
 
-        for x,y in self.moves:
+        for x,y in moves:
                 # Weight of position
                 cells.add((x, y), - 2 * abs(self.recomended_x - x)) 
 
-        for x,y in self.vision:
-            piece = self.grid.get(x ,y)
+        for x,y in vision:
+            piece = grid.get((x ,y))
             if piece:
                 for u,v in piece.get_moves(vision,0):
-                    if (u,v) in self.moves:
+                    if (u,v) in moves:
                         # Weight of incoming attacks or support of other pieces 
                         if piece.team != self.team:
                             cells.change_priority((u,v), self.attacked)
                         else:
-                            cells.change_priority((u,v), piece.support)
+                            cells.change_priority((u,v), self.support)
 
         #Weight of possibles attacks or support
         
@@ -134,23 +135,23 @@ class Piece:
 
         for x,y in moves:
 
-            piece = self.grid.get((x,y))
+            piece = grid.get((x,y))
 
             #Direct attack pieces
             if piece:
                 cells.change_priority((x,y), piece.value)
                     
-            self.position = (x,y)
-            moves2 = self.get_moves(vision,0)
+            self.position = pygame.Vector2(x,y)
+            moves2 = self.get_moves(vision, attack = False)
 
             for u,v in moves2:
                 if (u,v):
-                    piece = self.grid.get((u, v))
+                    piece = grid.get((u, v))
                     if piece:
                         cells.change_priority((x ,y), self.initiative)
 
 
-        self.position = (pos_x, pos_y)
+        self.position = pygame.Vector2(pos_x, pos_y)
 
         if self.stamina <= self.max_stamina :
             cells.change_priority((pos_x ,pos_y), self.restore)
@@ -158,16 +159,17 @@ class Piece:
 
         top = cells.top()
 
+
         if top == (pos_x, pos_y):
-            self.stamina +=1   
+            self.stamina +=1 
+              
         else:
-            self.grid.clear()
-            self.position = top
-            piece = self.grid.get(self.position)
+            grid.clear(self)
+            self.position = pygame.Vector2(top)
+            piece = grid.get(self.position)
             if piece:
                 piece.delete()
-            self.grid.set()
-        print(self.position)
+            grid.set(self)
 
 # Para cada casilla:
 # 1. - Cantidad de piezas que la atacan
