@@ -14,8 +14,8 @@ class Bishop(Piece):
 
         # Weights for different situations
         self.value = 6 
-        self.support = 0
-        self.attacked = 0
-        self.recomended_x = 0
-        self.initiative = 0
-        self.restore = 0
+        self.support = 10
+        self.attacked = -15
+        self.recomended_x = 12
+        self.initiative = 10
+        self.restore = 10

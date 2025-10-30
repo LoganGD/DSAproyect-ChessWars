@@ -15,10 +15,10 @@ class Pawn(Piece):
         # Weights for different situations
         self.value = 5
         self.support = 10
-        self.attacked = -15
+        self.attacked = -9
         self.recomended_x =10
         self.initiative = 5
-        self.restore = 0
+        self.restore = 10
 
 
 

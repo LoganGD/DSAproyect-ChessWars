@@ -16,10 +16,10 @@ class King(Piece):
 
         # Weights for different situations
         self.value = 1000
-        self.support = 0
-        self.attacked = 0
+        self.support = 10
+        self.attacked = -100
         self.recomended_x = 0
         self.initiative = 0
-        self.restore = 0
+        self.restore = 10
 
     
