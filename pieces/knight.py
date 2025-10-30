@@ -14,9 +14,9 @@ class Knight(Piece):
         self.directions = list(map(pygame.Vector2, self.directions))
 
         # Weights for different situations
-        self.value = 6
-        self.support = 0
-        self.attacked = 0
-        self.recomended_x = 0
-        self.initiative = 0
-    
+        self.value = 8
+        self.support = 10
+        self.attacked = -15
+        self.recomended_x = 12
+        self.initiative = 15
+        self.restore = 5

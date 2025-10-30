@@ -17,9 +17,11 @@ class King(Piece):
         self.adjacents = list(map(pygame.Vector2, self.adjacents))
 
         # Weights for different situations
-        self.value = 1000
-        self.support = 0
+        self.value = 10
+        self.support = 10
         self.attacked = 0
-        self.recomended_x = 0
+        self.recomended_x = 10
         self.initiative = 0
+        self.restore = 10
+
     

@@ -1,6 +1,6 @@
 
 class Node:
-    def __init__(self, key, data):
+    def __init__(self, data, key):
         self.__key = key
         self.__data = data
         self.__left = None
@@ -48,28 +48,28 @@ class Node:
 
 class Pqueue:
     def __init__(self, data = None):
-        self._root = None
+        self.__root = None
         self._size = 0
 
         if data:
             try:
-                for k, d in data:
-                    self.add(k,d)
+                for d, k in data:
+                    self.add(d,k)
             except:
                 self.add(data[0], data[1])
 
-    def add(self,key, data):
-        new_node = Node(key, data)
-        if self._root:
+    def add(self, data, key):
+        new_node = Node( data, key)
+        if self.__root:
             self.insert_node(new_node)
             self.__bubble_up(new_node)
         else:
-            self._root = new_node
+            self.__root = new_node
         self._size += 1
         
     def insert_node(self, node: Node):
         path = bin(self._size+1)[3:]
-        current = self._root
+        current = self.__root
 
         for c in path:
             parent = current
@@ -87,21 +87,24 @@ class Pqueue:
 
     def pop(self):
         if self._size ==0:
-            raise Exception("dequeue from empty queue")
+            raise Exception("pop from empty queue")
 
         if self._size == 1:
-            self._root =None
+            self.__root = None
+            return
         
         node = self.__get_last_node()
-        self._root.swap(node)
+        self.__root.swap(node)
         self.__remove_last_node()
-        self.__bubble_down(self._root)
+        self.__bubble_down(self.__root)
 
     def top(self):
-        return self._root.get_data()
+        if self._size ==0:
+            raise Exception("top from empty queue")
+        return self.__root.get_data()
 
     def erase(self, data):
-        node = self.__find(self._root, data)
+        node = self.__find(self.__root, data)
         last_node = self.__get_last_node()
         if node:
             last_node.swap(node)
@@ -110,14 +113,14 @@ class Pqueue:
             self.__bubble_down(node)
 
     def change_priority(self, data, new_key, dif=None):
-        node = self.__find(self._root, data)
+        node = self.__find(self.__root, data)
         if not node:
             return 
         
         if not dif:
             node.set_key(new_key)
         else:
-            node.set_key(node.get_key()+dif)
+            node.set_key(node.get_key() + dif)
 
         self.__bubble_up(node)
         self.__bubble_down(node)
@@ -159,7 +162,7 @@ class Pqueue:
 
     def __get_last_node(self):
         path = bin(self._size )[3:]
-        current = self._root
+        current = self.__root
 
         for c in path:
             if c=='0':
@@ -171,7 +174,7 @@ class Pqueue:
         
     def __remove_last_node(self):
         if self._size == 1:
-            self._root = None
+            self.__root = None
             self._size = 0
             return
 
@@ -196,7 +199,7 @@ class Pqueue:
             self.__recursive_repr(node.get_right(), deep+1, "- ")
 
     def __repr__(self):
-        self.__recursive_repr(self._root)
+        self.__recursive_repr(self.__root)
         return ""
 
 def main():

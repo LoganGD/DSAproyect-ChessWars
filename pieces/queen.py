@@ -15,8 +15,10 @@ class Queen(Piece):
 
         # Weights for different situations
         self.value = 15
-        self.support = 0
-        self.attacked = 0
-        self.recomended_x = 0
-        self.initiative = 0
+        self.support = 5
+        self.attacked = -20
+        self.recomended_x = 7
+        self.initiative = 5
+        self.restore = 5
+
     

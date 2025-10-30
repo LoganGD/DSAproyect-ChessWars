@@ -13,8 +13,10 @@ class Rook(Piece):
 
         # Weights for different situations
         self.value = 10
-        self.support = 0
-        self.attacked = 0
-        self.recomended_x = 0
-        self.initiative = 0
+        self.support = 8
+        self.attacked = -15
+        self.recomended_x = 8
+        self.initiative = 5
+        self.restore = 10
+
     
