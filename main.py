@@ -21,7 +21,7 @@ def main():
 
     while True:
         # reading inputs
-        clicked, option, keyboard, exit = gui.input()
+        clicked, action, keyboard, exit = gui.input()
 
         # if exit close the game
         if exit:
@@ -34,7 +34,7 @@ def main():
 
 
         # updates main game and GUI
-        changes = grid.update(current_time, clicked, option)
+        changes = grid.update(current_time, clicked, action)
         gui.update()
 
 

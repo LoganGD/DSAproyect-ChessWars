@@ -54,7 +54,7 @@ def init():
 
 def input():
     clicked = None
-    option = None
+    action = None
     global keyboard
     exit = False
 
@@ -79,7 +79,7 @@ def input():
                 for button in buttons:
                     value = button.click(mouse)
                     if value:
-                        option = value
+                        action = value
 
         if event.type == pygame.MOUSEBUTTONUP:
 
@@ -98,7 +98,7 @@ def input():
             else:
                 keyboard += event.unicode    
     
-    return clicked, option, keyboard, exit
+    return clicked, action, keyboard, exit
 
 
 def update():

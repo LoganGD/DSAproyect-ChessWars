@@ -50,32 +50,42 @@ def init(screen: pygame.Surface, square_size: int, offset: int):
             squares[i].append(Square(screen, position, square_size, offset))
 
     # Starting placement
-    set(Knight((0,4), 0))
-    set(King((0,5), 0))
-    set(Bishop((0,6), 0))
-    set(Pawn((1,4), 0))
-    set(Pawn((1,5), 0))
-    set(Pawn((1,6), 0))
+    Knight((0,4), 0)
+    King((0,5), 0)
+    Bishop((0,6), 0)
+    Pawn((1,4), 0)
+    Pawn((1,5), 0)
+    Pawn((1,6), 0)
     
-    set(Knight((15,4), 1))
-    set(King((15,5), 1))
-    set(Bishop((15,6), 1))
-    set(Pawn((14,4), 1))
-    set(Pawn((14,5), 1))
-    set(Pawn((14,6), 1))
+    Knight((15,4), 1)
+    King((15,5), 1)
+    Bishop((15,6), 1)
+    Pawn((14,4), 1)
+    Pawn((14,5), 1)
+    Pawn((14,6), 1)
 
 
+def get(position: pygame.Vector2):
+    if x < 0 and x >= GRID_WIDTH and y < 0 and y >= GRID_HEIGHT:
+        raise Exception("out of bounds")
+    x,y = position
+    return squares[x][y].piece
+    
 def set(piece: Piece):
+    if x < 0 and x >= GRID_WIDTH and y < 0 and y >= GRID_HEIGHT:
+        raise Exception("out of bounds")
     x,y = piece.position
     squares[x][y].set(piece)
 
 
 def clear(piece: Piece):
+    if x < 0 and x >= GRID_WIDTH and y < 0 and y >= GRID_HEIGHT:
+        raise Exception("out of bounds")
     x,y = piece.position
     squares[x][y].set(None)
 
 
-def update(current_time: float, clicked: list | None, option: str | None):
+def update(current_time: float, clicked: list | None, action: str | None):
     global turn_timer
     global turn_speed
     global current_team
@@ -87,16 +97,16 @@ def update(current_time: float, clicked: list | None, option: str | None):
                 squares[x][y].piece.selected = clicked[1]
                 set(squares[x][y].piece)
 
-    if option == "Pause":
+    if action == "Pause":
         turn_speed = 0
-    elif option == "Slow":
+    elif action == "Slow":
         turn_speed = 1
-    elif option == "Fast":
+    elif action == "Fast":
         turn_speed = 3
-    elif option:
+    elif action:
         for piece in Piece.deque[0]:
             if piece.selected:
-                piece.mood = option
+                piece.current_order = action
                 piece.selected = False
                 set(piece)
     
