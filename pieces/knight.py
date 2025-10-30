@@ -1,5 +1,6 @@
 import pygame
 from .piece import Piece
+from constants import *
 
 class Knight(Piece):
  
@@ -17,6 +18,6 @@ class Knight(Piece):
         self.value = 8
         self.support = 10
         self.attacked = -15
-        self.recomended_x = 12
-        self.initiative = 15
+        self.recomended_x = ( 12 if self.team == 0 else GRID_WIDTH - 12)
+        self.initiative = 10
         self.restore = 5

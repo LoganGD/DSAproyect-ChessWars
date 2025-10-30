@@ -50,12 +50,18 @@ def init(screen: pygame.Surface, square_size: int, offset: int):
             squares[i].append(Square(screen, position, square_size, offset))
 
     # Starting placement
+    Rook((0,5), 0)
     Knight((0,4), 0)
     King((0,5), 0)
     Bishop((0,6), 0)
+    Pawn((1,3), 0)
     Pawn((1,4), 0)
     Pawn((1,5), 0)
     Pawn((1,6), 0)
+    Pawn((1,7), 0)
+    Rook((0,7), 0)
+
+
     
     Knight((15,4), 1)
     King((15,5), 1)

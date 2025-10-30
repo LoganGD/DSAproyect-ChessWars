@@ -112,15 +112,12 @@ class Pqueue:
             self.__bubble_up(node)
             self.__bubble_down(node)
 
-    def change_priority(self, data, new_key, dif=None):
+    def change_priority(self, data, dif=None):
         node = self.__find(self.__root, data)
         if not node:
             return 
-        
-        if not dif:
-            node.set_key(new_key)
-        else:
-            node.set_key(node.get_key() + dif)
+    
+        node.set_key(node.get_key() + dif)
 
         self.__bubble_up(node)
         self.__bubble_down(node)

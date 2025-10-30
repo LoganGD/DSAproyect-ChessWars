@@ -111,14 +111,13 @@ class Piece:
         vision = self.get_vision()
         moves = self.get_moves(vision, attack = True)
 
-        print(name, self.team, self.current_order)
-        print(vision)
-        print(moves)
+        # print(name, self.team, self.current_order)
+        # print(vision)
+        # print(moves)
         # ^^^ debuging ^^^ 
-
-        return
-
-        moves,vision = self.get_moves_and_vision()
+        
+        pos_x = self.position[0]
+        pos_y = self.position[1]
 
         if self.stamina == 0:
             self.stamina +=1
@@ -128,10 +127,18 @@ class Piece:
 
         for x,y in moves:
                 # Weight of position
-                cells.add((x, y), - 2 * abs(self.recomended_x - x)) 
+                cells.add((x, y),0) 
+
+                if self.team == 0 and pos_x <= self.recomended_x:
+                    cells.change_priority((x,y), 10 * abs((x - pos_x)) + abs(y -pos_y)) 
+                elif self.team == 1 and pos_x >= self.recomended_x:
+                    cells.change_priority((x,y), 10 * abs((x - pos_x)) + abs(y -pos_y)) 
+                else:
+                    cells.change_priority((x,y), 5 * abs((x - pos_x)) + abs(y -pos_y)) 
+
 
         for x,y in vision:
-            piece = grid.get((x ,y))
+            piece = grid.get_piece((x ,y))
             if piece:
                 for u,v in piece.get_moves(vision,0):
                     if (u,v) in moves:
@@ -142,31 +149,30 @@ class Piece:
                             cells.change_priority((u,v), self.support)
 
         #Weight of possibles attacks or support
-        
-        pos_x = self.position[0]
-        pos_y = self.position[1]
 
         for x,y in moves:
 
-            piece = grid.get((x,y))
+            piece = grid.get_piece((x,y))
 
             #Direct attack pieces
             if piece:
-                cells.change_priority((x,y), piece.value)
+                cells.change_priority((x,y), piece.value + 5)
                     
             self.position = pygame.Vector2(x,y)
             moves2 = self.get_moves(vision, attack = False)
 
             for u,v in moves2:
+                if (u,v) == (x,y):
+                    continue
                 if (u,v):
-                    piece = grid.get((u, v))
+                    piece = grid.get_piece((u, v))
                     if piece:
                         cells.change_priority((x ,y), self.initiative)
 
 
         self.position = pygame.Vector2(pos_x, pos_y)
 
-        if self.stamina <= self.max_stamina :
+        if self.stamina <= self.max_stamina// 2 :
             cells.change_priority((pos_x ,pos_y), self.restore)
 
 
@@ -174,15 +180,16 @@ class Piece:
 
 
         if top == (pos_x, pos_y):
-            self.stamina +=1 
+            if self.stamina < self.max_stamina:
+                self.stamina +=1 
               
         else:
             grid.clear(self)
             self.position = pygame.Vector2(top)
-            piece = grid.get(self.position)
+            piece = grid.get_piece(self.position)
             if piece:
                 piece.delete()
-            grid.set(self)
+            grid.set_piece(self)
 
 # Para cada casilla:
 # 1. - Cantidad de piezas que la atacan

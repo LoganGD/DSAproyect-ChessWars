@@ -1,5 +1,7 @@
 import pygame
 from .piece import Piece
+from constants import *
+
 
 class Pawn(Piece):
     def __init__(self, position: tuple[int, int], team: int):
@@ -14,10 +16,10 @@ class Pawn(Piece):
 
         # Weights for different situations
         self.value = 4
-        self.support = 5
+        self.support = 2
         self.attacked = -2
-        self.recomended_x = 8
-        self.initiative = 3
+        self.recomended_x = (5 if self.team == 0 else GRID_WIDTH - 5)
+        self.initiative = 2
         self.restore = 10
 
 

@@ -1,5 +1,6 @@
 import pygame
 from .piece import Piece
+from constants import *
 
 class Queen(Piece):
     
@@ -17,7 +18,7 @@ class Queen(Piece):
         self.value = 15
         self.support = 5
         self.attacked = -20
-        self.recomended_x = 7
+        self.recomended_x = ( 7 if self.team == 0 else GRID_WIDTH - 7)
         self.initiative = 5
         self.restore = 5
 

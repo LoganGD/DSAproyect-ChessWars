@@ -1,5 +1,6 @@
 import pygame
 from .piece import Piece
+from constants import *
 
 class Rook(Piece):
     def __init__(self, position, team = 0):
@@ -15,7 +16,7 @@ class Rook(Piece):
         self.value = 10
         self.support = 8
         self.attacked = -15
-        self.recomended_x = 8
+        self.recomended_x = ( 8 if self.team == 0 else GRID_WIDTH - 8)
         self.initiative = 5
         self.restore = 10
 

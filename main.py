@@ -40,10 +40,10 @@ def main():
         gui.update()
 
 
-        # random events
-        for _ in range(dt * grid.turn_speed):
-            if random.random() < 0.001:
-                event.random_event()
+        # # random events
+        # for _ in range(dt * grid.turn_speed):
+        #     if random.random() < 0.001:
+        #         event.random_event()
 
 
         # debugging things
