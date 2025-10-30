@@ -13,21 +13,25 @@ class Piece:
         self.current_order = "Sleep"
 
         self.adjacents =[(1,0),(0,1),(-1,0),(0,-1)]
+        self.adjacents = list(map(pygame.Vector2, self.adjacents))
         self.level = 1
 
         grid.set(self)
 
 
     def valid(self, position):
-        if position.x < 0 or position.x >= GRID_WIDTH:
+        x,y = position
+        x = round(x)
+        y = round(y)
+        if x < 0 or x >= GRID_WIDTH:
             return False
-        if position.y < 0 or position.y >= GRID_HEIGHT:
+        if y < 0 or y >= GRID_HEIGHT:
             return False
         return True
     
     
     def has_piece(self, position: pygame.Vector2, vision: list[pygame.Vector2] = None, attack: bool = False):
-        if not self.valid():
+        if not self.valid(position):
             return False
         if vision and position not in vision:
             return False
@@ -40,48 +44,43 @@ class Piece:
 
 
     def get_vision(self):
-        vision =[]
-
-        pos_x = self.position[0]
-        pos_y = self.position[1]
-
-        for x , y in self.directions:
+        vision = [self.position]
+                
+        for direction in self.directions:
             for i in range(1,self.range + 1):
-                if  self.valid(pos_x + x * i, pos_y + y * i):
+                if  self.valid(self.position + direction * i):
                     
-                    if not (pos_x + x * i, pos_y) in vision:
-                        vision.append((pos_x + x * i, pos_y + y))
+                    if not self.position + direction * i in vision:
+                        vision.append(self.position + direction * i)
 
-                    piece = self.grid.get(pos_x + x * i, pos_y + y * i)
+                    piece = grid.get(self.position + direction * i)
 
                     if piece:
                         break
                     else:
-                        for u,v in self.adjacents:
-                            if abs(x * i + u) <= self.range and abs(y * i + v) <= self.range:
-                                if not ((x * i + u, y * i + v)) in vision:
-                                    vision.append((x * i + u, y * i + v))
+                        for adjacent in self.adjacents:
+                            if self.valid(self.position + direction * i + adjacent):
+                                if not (self.position + direction * i + adjacent) in vision:
+                                    vision.append(self.position + direction * i + adjacent)
         
         return vision
 
     
     def get_moves(self, vision, attack):
         moves = []
-        pos_x = self.position[0]
-        pos_y = self.position[1]
-        for x , y in self.directions:
+        for direction in self.directions:
             for i in range(1, self.range + 1):
-                if  self.valid(pos_x + x * i, pos_y + y * i):
-                    if not (pos_x + x * i, pos_y + y * i) in vision:
+                if  self.valid(self.position + direction * i):
+                    if not (self.position + direction * i) in vision:
                         continue
-                    piece = self.grid.get((pos_x + x * i, pos_y + y * i))
+                    piece = grid.get(self.position + direction * i)
 
                     if not piece:
-                        moves.append((pos_x + x * i, pos_y + y * i))
+                        moves.append(self.position + direction * i)
                         continue
 
                     if not attack or piece.team != self.team:
-                        moves.append((pos_x + x * i, pos_y + y * i))
+                        moves.append(self.position + direction * i)
                     
                     break
         if attack:
