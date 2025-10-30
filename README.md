@@ -1,17 +1,19 @@
 ## Starting up
-(You might want to start a python environment)
+
+### Making an environment
 
 ```bash
 python -m venv env
-./env/Scripts/Activate.ps1
+./env/Scripts/Activate
 ```
 
+
 ### Requirements:
-```bash
-pip install -r requirements.txt
-```
- - Python 3.13 (or similar)
  - pygame
+
+```bash
+pip install pygame
+```
 
 ## Running
 

@@ -1,147 +1,55 @@
 import pygame
+import gui
+import grid
 from constants import *
-from pieces.pieces import *
-from deque import Deque
-from grid import Grid
-from console import Console
-from button import Button
-from events import create_default
-
 
 def main():
     pygame.init()
     pygame.display.set_caption("Chess 2") # window title
 
-    # global objects
+    # game clock, limits fps
     clock = pygame.time.Clock()
-    screen = pygame.display.set_mode(SCREEN_SIZE)
-    screen.fill(PURPLE)
-    grid = Grid(screen)
-    
-    # debugging console
-    position = 10, screen.get_height() - 110
-    size = grid.offset.x - 20, 100
-    console_rect = pygame.Rect(*position, *size)
-    console = Console(screen, console_rect)
 
-    # initialize pieces structures
-    pieces_deque = Deque[Piece]()
-    orders = Deque[str]()
-    Piece.screen = screen
-    Piece.grid = grid
-    Piece.pieces_deque = pieces_deque
-    # Piece.orders = orders
-    Piece.square_size = grid.square_size
-    Piece.offset = grid.offset
+    # starting global objects
+    gui.init()
+    grid.init(gui.screen, gui.square_size, gui.offset)
 
-
-    global time_speed
-    time_speed = 0
-
-    # create buttons
-    buttons: list[Button] = []
-    Button.buttons_list = buttons
-
-    size = 100, 50
-
-    position = 50, 50    
-    button_rect = pygame.Rect(*position, *size)
-    button = Button(screen, button_rect, "Attack", lambda:orders.push_back("Attack"))
-    
-    position = 160, 50
-    button_rect = pygame.Rect(*position, *size)
-    button = Button(screen, button_rect, "Defend", lambda:orders.push_back("Defend"))
-
-    position = 50, 110
-    button_rect = pygame.Rect(*position, *size)
-    button = Button(screen, button_rect, "Opt 3", lambda:orders.push_back("Opt 3"))
-    
-    position = 160, 110
-    button_rect = pygame.Rect(*position, *size)
-    button = Button(screen, button_rect, "Opt 4", lambda:orders.push_back("Opt 4"))
-
-    def setSpeed(speed: int):
-        global time_speed
-        time_speed = speed
-
-    position = 50, 170
-    button_rect = pygame.Rect(*position, *size)
-    button = Button(screen, button_rect, "Pause", lambda:setSpeed(0))
-    
-    position = 160, 170
-    button_rect = pygame.Rect(*position, *size)
-    button = Button(screen, button_rect, "Continue", lambda:setSpeed(1))
-
-    # temporary piece placement
-    # create_default(0)
-    # create_default(1)
-
-    # variables
-    current_team = 0
-    turn_timer = 0
-    fps_timer = 0
-    timer = 0
-    dt,fps = 0,0
-
-    inputs = ""
-    debug = False
+    # debug flag
+    debug_mode = False
+    current_time = 0
+    fps,prev_fps = 0,0
     
     while True:
-        mouse = pygame.Vector2(pygame.mouse.get_pos())
+        # reading inputs
+        selection, option, code, exit = gui.input()
 
-        for event in pygame.event.get():
-            # close the window
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                return
-            
-            # mouse click
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                for button in buttons:
-                    button.click(mouse)
+        # if exit close the game
+        if exit:
+            pygame.quit()
+            return
+        
+        # if code matches turn on debug flag
+        if code == DEBUG_CODE:
+            debug_mode = True
 
-            # keyboard keys
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-                    return
-                
-                # check for debugging
-                if debug:
-                    console.process_key(event.key, event.unicode)
-                    console.draw()
-                else:
-                    inputs += event.unicode
-                    if inputs[-3:] == DEBUG_CODE:
-                        debug = True
-                        console.draw()
+        # debugging things
+        if debug_mode:
+            if abs(fps-prev_fps) > 3:
+                prev_fps = round(fps)
 
-        # buttons
-        for button in buttons:
-            button.draw(mouse)
+                font = pygame.font.Font(FONT_STYLE, FONT_SIZE)
+                text = font.render("FPS: " + str(round(fps)), True, WHITE, GRAY)
+                text_rect = text.get_rect(topright = (gui.screen.get_width(), 0))
+                gui.screen.blit(text, text_rect)
 
-        # piece turns
-        if time_speed and timer - turn_timer > TIMER_SECONDS:
-            turn_timer = timer
+        # updates main game and GUI
+        changes = grid.update(current_time, selection, option)
+        gui.draw()
 
-            for piece in pieces_deque:
-                if piece.team == current_team:
-                    piece.tick()
-            current_team = 1 - current_team
-
-        # debug fps
-        if debug and timer - fps_timer > 1:
-            fps_timer = timer
-            console.show_fps(fps)
-
-        # show on screen
-        pygame.display.flip()
-
-        # clock
-        dt = clock.tick(0) # limit FPS (0 for unlimited)
-        timer += dt / 1000
-        fps += (clock.get_fps() - fps) * dt / 1000
-
+        # limit FPS (0 for unlimited)
+        dt = clock.tick(0) / 1000
+        fps += (clock.get_fps() - fps) * dt
+        current_time += dt
 
 
 if __name__ == "__main__":
