@@ -18,6 +18,8 @@ class Pawn(Piece):
         self.attacked = -15
         self.recomended_x =10
         self.initiative = 5
+        self.restore = 0
+
 
 
     def get_vision(self):

@@ -1,5 +1,6 @@
 import pygame
 from constants import *
+from pqueue import Pqueue
 import grid
 
 class Piece:
@@ -96,21 +97,18 @@ class Piece:
         vision = self.get_vision()
         moves = self.get_moves(vision, True)
 
-        print(name, self.team, self.current_order)
-        print(vision)
-        print(moves)
-        # ^^^ debuging ^^^ 
+        # print(name, self.team, self.current_order)
+        # print(vision)
+        # print(moves)
+        # # ^^^ debuging ^^^ 
 
-        return
-
-        moves,vision = self.get_moves_and_vision()
+        # return
+        vision = self.get_vision()
+        moves = self.get_moves(vision, 1)
 
         if self.stamina == 0:
             self.stamina +=1
             return
-
-        pos_x = self.position[0]
-        pos_y = self.position[1]
 
         cells = Pqueue()
 
@@ -121,37 +119,42 @@ class Piece:
         for x,y in self.vision:
             piece = self.grid.get(x ,y)
             if piece:
-                for u,v in piece.moves:
-                        if (x+u,y+v) in self.moves:
-                            # Weight of incoming attacks or support of other pieces 
-                            if piece.team != self.team:
-                                cells.change_priority((x+u,y+v), self.attacked)
-                            else:
-                                cells.change_priority((x+u,y+v), piece.support)
+                for u,v in piece.get_moves(vision,0):
+                    if (u,v) in self.moves:
+                        # Weight of incoming attacks or support of other pieces 
+                        if piece.team != self.team:
+                            cells.change_priority((u,v), self.attacked)
+                        else:
+                            cells.change_priority((u,v), piece.support)
 
-        #Delete not possible moves and add weight of possibles attacks or support
+        #Weight of possibles attacks or support
+        
+        pos_x = self.position[0]
+        pos_y = self.position[1]
 
-        for x,y in self.moves:
-            if valid(pos_x + x, pos_y + y):
-                piece = self.grid.get((pos_x + x ,pos_y + y ))
+        for x,y in moves:
 
-                if piece:
-                    if self.team == 1:
-                        cells.erase((pos_x + x -1,pos_y + y ))
-                    else:  
-                        cells.erase((pos_x + x + 1,pos_y + y ))
+            piece = self.grid.get((x,y))
 
-                    if piece.team == self.team:
-                        cells.erase((pos_x + x ,pos_y + y )) 
+            #Direct attack pieces
+            if piece:
+                cells.change_priority((x,y), piece.value)
+                    
+            self.position = (x,y)
+            moves2 = self.get_moves(vision,0)
 
-                    else:
-                        # Attack in the next move
-                        cells.change_priority((pos_x + x ,pos_y + y ), 0, piece.value)
-                else:
-                    for u,v in self.moves:
-                        if valid(pos_x + x + u, pos_y + y + v):
-                            if self.grid.get((pos_x + x + u, pos_y + y + v)):
-                                cells.change_priority((pos_x + x ,pos_y + y), 0, self.initiative)
+            for u,v in moves2:
+                if (u,v):
+                    piece = self.grid.get((u, v))
+                    if piece:
+                        cells.change_priority((x ,y), self.initiative)
+
+
+        self.position = (pos_x, pos_y)
+
+        if self.stamina <= self.max_stamina :
+            cells.change_priority((pos_x ,pos_y), self.restore)
+
 
         top = cells.top()
 
@@ -171,7 +174,7 @@ class Piece:
 # 2. + Cantidad de piezas que la protegen (atacan pero son del mismo bando)
 # 3. + Piezas potenciales a las que puedes atacar si te mueves ahi 
 # 4. - Cordenada en x
-# Futuro:  
 # 5. + Piezas potenciales a las que puedes proteger si te mueves ahi 
 # 6. casilla inicial += f(stamina)
+# Futuro: 
 # 7. Recursos

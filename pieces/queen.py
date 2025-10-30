@@ -18,4 +18,6 @@ class Queen(Piece):
         self.attacked = 0
         self.recomended_x = 0
         self.initiative = 0
+        self.restore = 0
+
     
