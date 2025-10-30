@@ -5,6 +5,7 @@ from components.buttons import Button
 
 keyboard = ""
 buttons: list[Button] = []
+mouse_down = None
 
 
 def init():
@@ -26,11 +27,19 @@ def init():
     buttons.append(button)
     position = 50, 150
     button_rect = pygame.Rect(*position, *size)
-    button = Button(screen, button_rect, "Continue")
+    button = Button(screen, button_rect, "Slow")
     buttons.append(button)
     position = 50, 250
     button_rect = pygame.Rect(*position, *size)
-    button = Button(screen, button_rect, "Death")
+    button = Button(screen, button_rect, "Fast")
+    buttons.append(button)
+    position = 50, 360
+    button_rect = pygame.Rect(*position, *size)
+    button = Button(screen, button_rect, "Attack")
+    buttons.append(button)
+    position = 50, 460
+    button_rect = pygame.Rect(*position, *size)
+    button = Button(screen, button_rect, "Defend")
     buttons.append(button)
 
     # margin when the grid doesn't fill the screen
@@ -44,11 +53,12 @@ def init():
 
 
 def input():
-    selection = None
+    clicked = None
     option = None
     global keyboard
     exit = False
 
+    global mouse_down
     mouse = pygame.mouse.get_pos()
 
     for event in pygame.event.get():
@@ -58,10 +68,22 @@ def input():
         
         # if clicked, test all the buttons
         if event.type == pygame.MOUSEBUTTONDOWN:
-            for button in buttons:
-                value = button.click(mouse)
-                if value:
-                    option = value
+
+            position = ((mouse[0] - offset) // square_size, mouse[1] // square_size)
+            if event.button == 1:
+                clicked = (position, True)
+            if event.button == 3:
+                clicked = (position, False)
+
+            if event.button == 1:
+                for button in buttons:
+                    value = button.click(mouse)
+                    if value:
+                        option = value
+
+        if event.type == pygame.MOUSEBUTTONUP:
+
+            mouse_down = None
 
         if event.type == pygame.KEYDOWN:
             # [esc] closes the game
@@ -76,10 +98,10 @@ def input():
             else:
                 keyboard += event.unicode    
     
-    return selection, option, keyboard, exit
+    return clicked, option, keyboard, exit
 
 
-def draw():
+def update():
     mouse = pygame.mouse.get_pos()
 
     # update mouse hovering on button

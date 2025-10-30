@@ -9,6 +9,9 @@ class Piece:
         self.deque[team].append(self)
         self.position = position
         self.team = team
+        self.selected = False
+        self.mood = "Empty thoughts"
 
     def tick(self):
-        print(self.team, self.__class__)
+        name = self.__class__.__name__
+        print(name, self.team, self.mood)

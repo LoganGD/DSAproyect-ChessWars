@@ -12,22 +12,28 @@ current_team = 0
 def init(screen: pygame.Surface, square_size: int, offset: int):
     global white_square
     global black_square
-    global piece_square
+    global white_blue_square
+    global black_blue_square
+    global piece_sprites
 
     # preparing default sprites
     white_square = pygame.Surface((square_size,square_size))
     white_square.fill(WHITE)
     black_square = pygame.Surface((square_size,square_size))
     black_square.fill(BLACK)
+    white_blue_square = pygame.Surface((square_size,square_size))
+    white_blue_square.fill(WHITE_BLUE)
+    black_blue_square = pygame.Surface((square_size,square_size))
+    black_blue_square.fill(BLACK_BLUE)
     
     # preparing pieces sprites
-    piece_square = dict(),dict()
+    piece_sprites = dict(),dict()
     size = (square_size // 1.5, square_size // 4)
     center = size[0] // 2, size[1] // 2
     font = pygame.font.Font(FONT_STYLE, square_size // 4)
 
     for piece in Piece.__subclasses__():
-        for team, color in enumerate([WHITE,BLACK]):
+        for team, color in enumerate([WHITE, BLACK]):
             text = font.render(piece.__name__, True, color)
             text_rect = text.get_rect(center = center)
             
@@ -35,7 +41,7 @@ def init(screen: pygame.Surface, square_size: int, offset: int):
             square.fill(GRAY)
             square.blit(text, text_rect)
 
-            piece_square[team][piece] = square
+            piece_sprites[team][piece] = square
 
     # create the grid
     for i in range(GRID_WIDTH):
@@ -69,18 +75,31 @@ def clear(piece: Piece):
     squares[x][y].set(None)
 
 
-def update(current_time: float, selection: list | None, option: str | None):
+def update(current_time: float, clicked: list | None, option: str | None):
     global turn_timer
     global turn_speed
     global current_team
 
+    if clicked:
+        x,y = clicked[0]
+        if x >= 0 and x < GRID_WIDTH and y >= 0 and y < GRID_HEIGHT:
+            if squares[x][y].piece and squares[x][y].piece.team == 0:
+                squares[x][y].piece.selected = clicked[1]
+                set(squares[x][y].piece)
+
     if option == "Pause":
         turn_speed = 0
-    if option == "Continue":
+    elif option == "Slow":
         turn_speed = 1
-    if option == "Death":
-        Death()
-
+    elif option == "Fast":
+        turn_speed = 3
+    elif option:
+        for piece in Piece.deque[0]:
+            if piece.selected:
+                piece.mood = option
+                piece.selected = False
+                set(piece)
+    
     if (current_time - turn_timer) * turn_speed > 1:
         turn_timer = current_time
 
@@ -101,8 +120,10 @@ class Square:
 
         if sum(position) % 2:
             self.default_sprite = black_square
+            self.selected_sprite = black_blue_square
         else:
             self.default_sprite = white_square
+            self.selected_sprite = white_blue_square
 
         # first draw
         self.set(None)
@@ -112,11 +133,15 @@ class Square:
         self.piece = piece
 
         # clear the square
-        square_rect = self.default_sprite.get_rect(center = self.drawing_position)
-        self.screen.blit(self.default_sprite, square_rect)
+        if piece and piece.selected:
+            square_rect = self.selected_sprite.get_rect(center = self.drawing_position)
+            self.screen.blit(self.selected_sprite, square_rect)
+        else:
+            square_rect = self.default_sprite.get_rect(center = self.drawing_position)
+            self.screen.blit(self.default_sprite, square_rect)
 
         # if piece on square draw it's sprite
         if piece:
-            square = piece_square[piece.team][type(piece)]
+            square = piece_sprites[piece.team][type(piece)]
             square_rect = square.get_rect(center = self.drawing_position)
             self.screen.blit(square, square_rect)

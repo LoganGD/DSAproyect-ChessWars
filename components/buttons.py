@@ -3,7 +3,12 @@ from constants import *
 
 
 class Button:
-    def __init__(self, surface: pygame.Surface, rect: pygame.Rect, button_text: str):
+    def __init__(
+        self, 
+        surface: pygame.Surface, 
+        rect: pygame.Rect, 
+        button_text: str
+    ):
         self.surface = surface
         self.rect = rect
         self.text = button_text

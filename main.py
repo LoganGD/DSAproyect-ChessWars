@@ -18,10 +18,10 @@ def main():
     debug_mode = False
     current_time = 0
     fps,prev_fps = 0,0
-    
+
     while True:
         # reading inputs
-        selection, option, code, exit = gui.input()
+        clicked, option, keyboard, exit = gui.input()
 
         # if exit close the game
         if exit:
@@ -29,8 +29,14 @@ def main():
             return
         
         # if code matches turn on debug flag
-        if code == DEBUG_CODE:
+        if keyboard == DEBUG_CODE:
             debug_mode = True
+
+
+        # updates main game and GUI
+        changes = grid.update(current_time, clicked, option)
+        gui.update()
+
 
         # debugging things
         if debug_mode:
@@ -38,13 +44,12 @@ def main():
                 prev_fps = round(fps)
 
                 font = pygame.font.Font(FONT_STYLE, FONT_SIZE)
-                text = font.render("FPS: " + str(round(fps)), True, WHITE, GRAY)
-                text_rect = text.get_rect(topright = (gui.screen.get_width(), 0))
-                gui.screen.blit(text, text_rect)
 
-        # updates main game and GUI
-        changes = grid.update(current_time, selection, option)
-        gui.draw()
+                fps_text = "FPS: " + str(round(fps))
+                text = font.render(fps_text, True, WHITE, GRAY)
+                text_rect = text.get_rect(
+                    topright = (gui.screen.get_width(), 0))
+                gui.screen.blit(text, text_rect)
 
         # limit FPS (0 for unlimited)
         dt = clock.tick(0) / 1000
