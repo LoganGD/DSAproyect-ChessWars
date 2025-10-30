@@ -1,6 +1,6 @@
 import pygame
 from constants import *
-from pieces import Piece
+from pieces.pieces import Piece
 
 
 class Grid:

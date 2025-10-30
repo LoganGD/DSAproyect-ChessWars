@@ -1,6 +1,6 @@
 import pygame
 from constants import *
-from pieces import *
+from pieces.pieces import *
 from deque import Deque
 from grid import Grid
 from console import Console

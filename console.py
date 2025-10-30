@@ -1,6 +1,6 @@
 import pygame
 from constants import *
-from pieces import *
+from pieces.pieces import *
 from events import create_default
 
 class Console:

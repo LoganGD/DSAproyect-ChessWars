@@ -1,4 +1,4 @@
-from pieces import *
+from pieces.pieces import *
 
 def create_default(team: int):
     if team == 0:
