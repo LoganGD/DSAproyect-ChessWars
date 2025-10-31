@@ -77,14 +77,14 @@ class Deque(Generic[T]):
         new_node = Node(data)
         self.__size += 1
 
-        if not self.__front:
+        if not self.__back:
             self.__front = self.__back = new_node
             return
 
-        new_node.set_prev(self.__front)
-        self.__front.set_next(new_node)
+        new_node.set_next(self.__back)
+        self.__back.set_prev(new_node)
 
-        self.__front = new_node
+        self.__back = new_node
     
 
     def pop_back(self):

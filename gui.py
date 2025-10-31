@@ -1,6 +1,7 @@
 import pygame
 from constants import *
 from components.buttons import Button
+from pieces import *
 
 
 keyboard = ""
@@ -20,24 +21,29 @@ def init():
     offset = screen.get_width() - square_size * GRID_WIDTH
 
     # test button
-    size = 200, 100
+    size = 150, 80
     position = 50, 50
     button_rect = pygame.Rect(*position, *size)
     button = Button(screen, button_rect, "Pause")
     buttons.append(button)
-    position = 50, 150
+    position = 50, 140
     button_rect = pygame.Rect(*position, *size)
     button = Button(screen, button_rect, "Slow")
     buttons.append(button)
-    position = 50, 250
+    position = 50, 230
     button_rect = pygame.Rect(*position, *size)
     button = Button(screen, button_rect, "Fast")
     buttons.append(button)
-    position = 50, 360
+    position = 50, 320
+    button_rect = pygame.Rect(*position, *size)
+    button = Button(screen, button_rect, "UFast")
+    buttons.append(button)
+
+    position = 230, 50
     button_rect = pygame.Rect(*position, *size)
     button = Button(screen, button_rect, "Attack")
     buttons.append(button)
-    position = 50, 460
+    position = 230, 140
     button_rect = pygame.Rect(*position, *size)
     button = Button(screen, button_rect, "Defend")
     buttons.append(button)
@@ -101,11 +107,28 @@ def input():
     return clicked, action, keyboard, exit
 
 
-def update():
+def output(king_data: King):
     mouse = pygame.mouse.get_pos()
 
     # update mouse hovering on button
     for button in buttons:
         button.draw(mouse)
+
+    # showing stats
+    
+    console_rect = pygame.Rect(20, 450, 300, 150)
+
+
+    pygame.draw.rect(screen, BLACK, console_rect) # fill black
+        
+    font = pygame.font.Font(FONT_STYLE, FONT_SIZE)
+    offset = pygame.Vector2(console_rect.topleft)
+
+    line = font.render(str(king_data.low_piece_value), True, WHITE) # input
+    screen.blit(line, offset + (5,5))
+
+    line = font.render(str(king_data.high_piece_value), True, WHITE) # output
+    screen.blit(line, offset + (5,30))
+
 
     pygame.display.flip()

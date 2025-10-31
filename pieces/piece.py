@@ -6,6 +6,7 @@ import grid
 
 class Piece:
     deque = Deque['Piece'](),Deque['Piece']()
+    king = [None, None]
 
     def __init__(self, position: tuple[int, int], team: int):
         
@@ -119,11 +120,6 @@ class Piece:
         # return
         vision = self.get_vision()
         moves = self.get_moves(vision, attack = True)
-
-        # print(name, self.team, self.current_order)
-        # print(vision)
-        # print(moves)
-        # ^^^ debuging ^^^ 
         
         pos_x = self.position[0]
         pos_y = self.position[1]
@@ -201,6 +197,12 @@ class Piece:
             piece = grid.get_piece(self.position)
             
             if piece:
+                Piece.king[not piece.team].low_piece_value += 1
+                if self.value != 4:
+                    Piece.king[not piece.team].high_piece_value += 1
+                if self.value == 15:
+                    Piece.king[not piece.team].high_piece_value += 1
+
                 self.captured_value += piece.value
 
                 # if captured enough, level up and call it's upgrades

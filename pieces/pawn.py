@@ -1,8 +1,7 @@
 import pygame
+from constants import *
 from .piece import Piece
 from .queen import Queen
-from constants import *
-import grid
 
 class Pawn(Piece):
     def __init__(self, position: tuple[int, int], team: int):

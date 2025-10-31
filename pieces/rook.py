@@ -1,6 +1,6 @@
 import pygame
-from .piece import Piece
 from constants import *
+from .piece import Piece
 
 class Rook(Piece):
     def __init__(self, position, team = 0):

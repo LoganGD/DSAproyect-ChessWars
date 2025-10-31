@@ -1,11 +1,10 @@
 import pygame
 from constants import *
-from pieces import *
 
 # empty grid
 squares: list[list['Square']] = [[] for _ in range(GRID_WIDTH)]
 turn_speed = 0
-turn_timer = 0
+turn_timer = 1000
 current_team = 0
 
 
@@ -35,6 +34,7 @@ def init(screen: pygame.Surface, grid_square_size: int, offset: int):
     center = size[0] // 2, size[1] // 2
     font = pygame.font.Font(FONT_STYLE, square_size // 4)
 
+    from pieces import Piece,Pawn,Rook,Knight,Bishop,Queen,King
     for piece in Piece.__subclasses__():
         for team in range(2):
             image_path = f"assets/{piece.__name__}_{team}.png"
@@ -85,7 +85,7 @@ def get_piece(position: pygame.Vector2):
         raise Exception("out of bounds")
     return squares[x][y].piece
     
-def set_piece(piece: Piece):
+def set_piece(piece):
     x,y = piece.position
     x = round(x)
     y = round(y)
@@ -94,7 +94,7 @@ def set_piece(piece: Piece):
     squares[x][y].set(piece)
 
 
-def clear(piece: Piece):
+def clear(piece):
     x,y = piece.position
     x = round(x)
     y = round(y)
@@ -103,7 +103,7 @@ def clear(piece: Piece):
     squares[x][y].set(None)
 
 
-def update(current_time: float, clicked: list | None, action: str | None):
+def update(dt: float, clicked: list | None, action: str | None):
     global turn_timer
     global turn_speed
     global current_team
@@ -115,12 +115,16 @@ def update(current_time: float, clicked: list | None, action: str | None):
                 squares[x][y].piece.selected = clicked[1]
                 set_piece(squares[x][y].piece)
 
+    from pieces import Piece
+
     if action == "Pause":
         turn_speed = 0
     elif action == "Slow":
         turn_speed = 1
     elif action == "Fast":
         turn_speed = 3
+    elif action == "UFast":
+        turn_speed = 15
     elif action:
         for piece in Piece.deque[0]:
             if piece.selected:
@@ -128,14 +132,14 @@ def update(current_time: float, clicked: list | None, action: str | None):
                 piece.selected = False
                 set_piece(piece)
     
-    if (current_time - turn_timer) * turn_speed > 1:
-        turn_timer = current_time
+    turn_timer -= turn_speed * dt
+    if turn_timer <= 0:
+        turn_timer += 1000
 
         for piece in Piece.deque[current_team]:
             piece.tick()
-        # print()
 
-        current_team = 1 - current_team
+        current_team = not current_team
 
 
 class Square:
@@ -157,7 +161,7 @@ class Square:
         self.set(None)
 
 
-    def set(self, piece: Piece):
+    def set(self, piece):
         self.piece = piece
 
         # clear the square

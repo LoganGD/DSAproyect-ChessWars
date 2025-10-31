@@ -2,8 +2,7 @@ import pygame
 import gui
 import grid
 from constants import *
-import random
-import event
+from pieces import *
 
 def main():
     pygame.init()
@@ -36,14 +35,8 @@ def main():
 
 
         # updates main game and GUI
-        changes = grid.update(current_time, clicked, action)        
-        gui.update()
-
-
-        # random events
-        for _ in range(dt * grid.turn_speed):
-            if random.random() < 0.001:
-                event.random_event()
+        grid.update(dt, clicked, action)
+        gui.output(Piece.king[0])
 
 
         # debugging things
@@ -62,7 +55,6 @@ def main():
         # limit FPS (0 for unlimited)
         dt = clock.tick(0)
         fps += (clock.get_fps() - fps) * dt / 1000
-        current_time += dt / 1000
 
 
 if __name__ == "__main__":
