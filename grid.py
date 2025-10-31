@@ -34,14 +34,16 @@ def init(screen: pygame.Surface, square_size: int, offset: int):
 
     for piece in Piece.__subclasses__():
         for team, color in enumerate([WHITE, BLACK]):
-            text = font.render(piece.__name__, True, color)
-            text_rect = text.get_rect(center = center)
-            
-            square = pygame.Surface(size)
-            square.fill(GRAY)
-            square.blit(text, text_rect)
+            image_path = f"assets/{piece.__name__}_{team}.png"
 
-            piece_sprites[team][piece] = square
+            image = pygame.image.load(image_path).convert_alpha()
+
+            w, h = image.get_size()
+            scale = (square_size * 0.6) / max(w, h)
+            new_size = (int(w * scale), int(h * scale))
+            image = pygame.transform.smoothscale(image, new_size)
+
+            piece_sprites[team][piece] = image
 
     # create the grid
     for i in range(GRID_WIDTH):

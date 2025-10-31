@@ -187,6 +187,7 @@ class Piece:
             grid.clear(self)
             self.position = pygame.Vector2(top)
             piece = grid.get_piece(self.position)
+            
             if piece:
                 piece.delete()
             grid.set_piece(self)
