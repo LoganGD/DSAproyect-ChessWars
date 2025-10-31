@@ -1,21 +1,30 @@
 import pygame
 from constants import *
+from structures.deque import Deque 
 from structures.pqueue import Pqueue 
 import grid
 
 class Piece:
-    deque: tuple[list['Piece'], list['Piece']] = [],[]
+    deque = Deque['Piece'](),Deque['Piece']()
 
     def __init__(self, position: tuple[int, int], team: int):
-        self.deque[team].append(self)
+        
+        self.deque[team].push_back(self)
+
         self.position = pygame.Vector2(position)
         self.team = team
         self.selected = False
         self.current_order = "Defend"
 
+        self.captured_value = 0
+        self.L1 = lambda:None
+        self.L2 = lambda:None
+
         self.adjacents =[(1,0),(0,1),(-1,0),(0,-1)]
         self.adjacents = list(map(pygame.Vector2, self.adjacents))
-        self.level = 1
+
+        self.level = 0
+
 
         grid.set_piece(self)
 
@@ -121,6 +130,7 @@ class Piece:
 
         if self.stamina == 0:
             self.stamina +=1
+            grid.set_piece(self)
             return
 
         cells = Pqueue()
@@ -182,16 +192,35 @@ class Piece:
         if top == (pos_x, pos_y):
             if self.stamina < self.max_stamina:
                 self.stamina +=1 
+            grid.set_piece(self)
               
         else:
+            self.stamina -= 1
             grid.clear(self)
             self.position = pygame.Vector2(top)
             piece = grid.get_piece(self.position)
             
             if piece:
-                piece.delete()
-            grid.set_piece(self)
+                self.captured_value += piece.value
 
+                # if captured enough, level up and call it's upgrades
+                if self.captured_value // self.value > self.level:
+                    self.level += 1
+                    if self.level == 1:
+                        self.L1()
+                    if self.level == 2:
+                        self.L2()
+                    
+
+                piece.delete()
+            
+            grid.set_piece(self)
+                           
+            self.attempt_promotion()
+
+
+    def attempt_promotion(self):
+        pass
 # Para cada casilla:
 # 1. - Cantidad de piezas que la atacan
 # 2. + Cantidad de piezas que la protegen (atacan pero son del mismo bando)

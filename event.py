@@ -1,18 +1,33 @@
 import random
 import grid
+from pieces import *
 from constants import *
 
 def random_event():
-    random.choice(
-        create_resources
-    )()
+    return 
+    opts = []
+    probs = []
 
-def create_resources():
-    for _ in range(3):
-        x = random.randint(0, GRID_WIDTH - 1)
-        y = random.randint(0, GRID_HEIGHT - 1)
-        while grid.get_piece((x,y)):
-            x = random.randint(0, GRID_WIDTH - 1)
-            y = random.randint(0, GRID_HEIGHT - 1)
-        
-        grid.set_resouce((x,y), GRASS_BALL)
+    opts.append(attack_wave)
+    probs.append(1)
+
+    opts.append(create_pieces)
+    probs.append(1)
+
+    opts.append(retreat)
+    probs.append(1)
+
+    random.choices(opts,probs)()
+
+def attack_wave():
+    options = Piece.deque[1][:]
+    random.shuffle(options)
+    for piece in options[:5]:
+        piece.current_order = "Attack"
+
+def create_pieces():
+    pass
+
+def retreat():
+    for piece in Piece.deque[1]:
+        piece.current_order = "Defend"

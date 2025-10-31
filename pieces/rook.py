@@ -4,11 +4,20 @@ from constants import *
 
 class Rook(Piece):
     def __init__(self, position, team = 0):
-        super().__init__(position, team)
-                 
         self.stamina = 5
         self.max_stamina = 5
         self.range = 3
+
+        super().__init__(position, team)
+                 
+        self.captured_value = 0
+        def L1():
+            self.max_stamina += 1
+        self.L1 = L1
+        def L2():
+            self.range += 1
+        self.L2 = L2
+
         self.directions = [(1,0),(0,1),(-1,0),(0,-1)]
         self.directions = list(map(pygame.Vector2, self.directions))
 
