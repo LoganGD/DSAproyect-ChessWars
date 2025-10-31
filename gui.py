@@ -22,15 +22,15 @@ def init():
 
     # test button
     size = 150, 80
-    position = 50, 50
+    position = 25, 50
     button_rect = pygame.Rect(*position, *size)
     button = Button(screen, button_rect, "Pause")
     buttons.append(button)
-    position = 50, 140
+    position = 25, 140
     button_rect = pygame.Rect(*position, *size)
     button = Button(screen, button_rect, "Slow")
     buttons.append(button)
-    position = 50, 230
+    position = 25, 230
     button_rect = pygame.Rect(*position, *size)
     button = Button(screen, button_rect, "Fast")
     buttons.append(button)
@@ -39,15 +39,15 @@ def init():
     # button = Button(screen, button_rect, "UFast")
     # buttons.append(button)
 
-    position = 230, 50
+    position = 205, 50
     button_rect = pygame.Rect(*position, *size)
     button = Button(screen, button_rect, "Attack")
     buttons.append(button)
-    position = 230, 140
+    position = 205, 140
     button_rect = pygame.Rect(*position, *size)
     button = Button(screen, button_rect, "Explore")
     buttons.append(button)
-    position = 230, 230
+    position = 205, 230
     button_rect = pygame.Rect(*position, *size)
     button = Button(screen, button_rect, "Defend")
     buttons.append(button)
@@ -62,27 +62,24 @@ def init():
     pygame.draw.rect(screen, BLACK, margin)
 
 
-    console_rect = pygame.Rect(40, 350, 350, 140)
+    console_rect = pygame.Rect(15, 345, 350, 120)
     pygame.draw.rect(screen, BLACK, console_rect) # fill black
         
     font = pygame.font.Font(FONT_STYLE, FONT_SIZE_SMALL)
     console_offset = pygame.Vector2(console_rect.topleft)
 
-    line = font.render("Select turn speed in first column", True, WHITE) # input
+    line = font.render("Select pieces with right click", True, WHITE) # output
     screen.blit(line, console_offset + (10,10))
     
-    line = font.render("Select pieces with right click", True, WHITE) # output
+    line = font.render("Deselect with left click", True, WHITE) # output
     screen.blit(line, console_offset + (10,35))
     
-    line = font.render("and deselect with left click", True, WHITE) # output
+    line = font.render("Select turn speed in first column", True, WHITE) # input
     screen.blit(line, console_offset + (10,60))
 
-    line = font.render("Choose an action for the selected", True, WHITE) # output
+    line = font.render("Choose action in second column", True, WHITE) # output
     screen.blit(line, console_offset + (10,85))
 
-    line = font.render("pieces in the second column", True, WHITE) # output
-    screen.blit(line, console_offset + (10,110))
-    
 
 
 def input():
@@ -144,7 +141,7 @@ def output(updated: bool, king_data: King):
     # showing stats
     
     if updated:
-        console_rect = pygame.Rect(40, 350, 350, 140)
+        console_rect = pygame.Rect(15, 345, 350, 120)
         pygame.draw.rect(screen, BLACK, console_rect) # fill black
             
         font = pygame.font.Font(FONT_STYLE, FONT_SIZE_SMALL)
