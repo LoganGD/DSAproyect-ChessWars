@@ -141,12 +141,10 @@ def update(dt: float, clicked: list | None, action: str | None):
                     piece.recomended_x = piece.base_x + 2
                 if action == "Defend":
                     piece.recomended_x = piece.base_x - 2
-
                 if action == "Explore":
-                    self.recomended_x = self.base_x - 2
+                    piece.recomended_x = piece.base_x
                 
                 piece.change_x()
-                piece.current_order = action
                 piece.selected = False
                 set_piece(piece)
     

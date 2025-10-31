@@ -200,7 +200,16 @@ class Pqueue:
         return ""
 
 def main():
-    pass
+    queue = Pqueue()
+    queue.add('a',5)
+    queue.add('b',1)
+    queue.add('c',7)
+    queue.add('d',3)
+    print(queue.top())
+    queue.pop()
+    print(queue.top())
+    queue.change_priority('d',10)
+    print(queue.top())
 
 if __name__ == "__main__":
     main()

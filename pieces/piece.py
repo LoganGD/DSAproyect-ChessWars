@@ -16,7 +16,6 @@ class Piece:
         self.position = pygame.Vector2(position)
         self.team = team
         self.selected = False
-        self.current_order = "Defend"
 
         self.captured_value = 0
         self.L1 = lambda:None
@@ -68,7 +67,7 @@ class Piece:
     
     def change_x(self):
         if self.team == 1:
-            self.recomended_x = GRID_WIDTH - self.recomended_x
+            self.recomended_x = GRID_WIDTH - 1 - self.recomended_x
 
 
     def get_vision(self):
@@ -145,9 +144,9 @@ class Piece:
                 cells.add((x, y),0) 
 
                 if self.team == 0 and pos_x <= self.recomended_x:
-                    cells.change_priority((x,y), 10 * abs((x - pos_x)) + abs(y -pos_y)) 
+                    cells.change_priority((x,y), 2 * abs((x - pos_x)) + abs(y -pos_y)) 
                 elif self.team == 1 and pos_x >= self.recomended_x:
-                    cells.change_priority((x,y), 10 * abs((x - pos_x)) + abs(y -pos_y)) 
+                    cells.change_priority((x,y), 2 * abs((x - pos_x)) + abs(y -pos_y)) 
                 else:
                     cells.change_priority((x,y), - abs((x - pos_x)) ) 
 
@@ -170,7 +169,7 @@ class Piece:
             piece = grid.get_piece((x,y))
 
             #Direct attack pieces
-            if piece:
+            if piece and piece.team != self.team:
                 cells.change_priority((x,y), 5 * piece.value + 5)
                     
             self.position = pygame.Vector2(x,y)
@@ -244,14 +243,3 @@ def main():
 
 if __name__ == "main":
     main()
-
-
-# Para cada casilla:
-# 1. - Cantidad de piezas que la atacan
-# 2. + Cantidad de piezas que la protegen (atacan pero son del mismo bando)
-# 3. + Piezas potenciales a las que puedes atacar si te mueves ahi 
-# 4. - Cordenada en x
-# 5. + Piezas potenciales a las que puedes proteger si te mueves ahi 
-# 6. casilla inicial += f(stamina)
-# Futuro: 
-# 7. Recursos
