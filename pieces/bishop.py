@@ -24,8 +24,8 @@ class Bishop(Piece):
 
         # Weights for different situations
         self.value = 6 
-        self.support = 10
+        self.support = 5
         self.attacked = -15
         self.recomended_x = (12 if self.team == 0 else GRID_WIDTH - 12)
-        self.initiative = 5
+        self.initiative = 15
         self.restore = 10

@@ -22,8 +22,8 @@ class Pawn(Piece):
         self.value = 4
         self.support = 2
         self.attacked = -2
-        self.recomended_x = (5 if self.team == 0 else GRID_WIDTH - 5)
-        self.initiative = 2
+        self.recomended_x = (6 if self.team == 0 else GRID_WIDTH - 5)
+        self.initiative = 5
         self.restore = 10
 
 

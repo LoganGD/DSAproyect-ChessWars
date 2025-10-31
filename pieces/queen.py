@@ -28,7 +28,7 @@ class Queen(Piece):
         self.support = 5
         self.attacked = -20
         self.recomended_x = ( 7 if self.team == 0 else GRID_WIDTH - 7)
-        self.initiative = 5
+        self.initiative = 10
         self.restore = 5
 
     

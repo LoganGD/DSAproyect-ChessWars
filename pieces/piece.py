@@ -162,7 +162,7 @@ class Piece:
 
             #Direct attack pieces
             if piece:
-                cells.change_priority((x,y), piece.value + 5)
+                cells.change_priority((x,y), 2 * piece.value + 5)
                     
             self.position = pygame.Vector2(x,y)
             moves2 = self.get_moves(vision, attack = False)

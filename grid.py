@@ -55,26 +55,47 @@ def init(screen: pygame.Surface, grid_square_size: int, offset: int):
             squares[i].append(Square(screen, position, square_size, offset))
 
     # Starting placement
-    Rook((0,5), 0)
-    Knight((0,4), 0)
-    King((0,5), 0)
-    Bishop((0,6), 0)
+    Rook((0,2), 0)
+    Knight((0,3), 0)
+    Bishop((0,4), 0)
+    Queen((0,5),0)
+    King((0,6), 0)
+    Bishop((0,7), 0)
+    Knight((0,8), 0)
+    Rook((0,9), 0)
+
+    Pawn((1,2), 0)
     Pawn((1,3), 0)
     Pawn((1,4), 0)
     Pawn((1,5), 0)
     Pawn((1,6), 0)
     Pawn((1,7), 0)
-    Rook((0,7), 1)
+    Pawn((1,8), 0)
+    Pawn((1,9), 0)
 
 
-    
-    Knight((15,4), 1)
-    King((15,5), 1)
-    Queen((15,8), 1)
+    Rook((15,2), 1)
+    Knight((15,3), 1)
+    Bishop((15,4), 1)
+    Queen((15,5),1)
+    King((15,6), 1)
     Bishop((15,7), 1)
+    Knight((15,8), 1)
+    Rook((15,9), 1)
+
+    Pawn((14,2), 1)
+    Pawn((14,3), 1)
     Pawn((14,4), 1)
     Pawn((14,5), 1)
     Pawn((14,6), 1)
+    Pawn((14,7), 1)
+    Pawn((14,8), 1)
+    Pawn((14,9), 1)
+    
+   
+
+    
+
 
 
 def get_piece(position: pygame.Vector2):
