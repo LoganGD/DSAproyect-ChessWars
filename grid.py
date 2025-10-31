@@ -61,13 +61,14 @@ def init(screen: pygame.Surface, square_size: int, offset: int):
     Pawn((1,5), 0)
     Pawn((1,6), 0)
     Pawn((1,7), 0)
-    Rook((0,7), 0)
+    Rook((0,7), 1)
 
 
     
     Knight((15,4), 1)
     King((15,5), 1)
-    Bishop((15,6), 1)
+    Queen((15,8), 1)
+    Bishop((15,7), 1)
     Pawn((14,4), 1)
     Pawn((14,5), 1)
     Pawn((14,6), 1)
