@@ -25,7 +25,13 @@ class King(Piece):
         # Weights for different situations
         self.support = 5
         self.attacked = -1000
-        self.recomended_x = (0 if self.team == 0 else GRID_WIDTH - 0)
+        
+        
+        self.base_x = 12
+        self.recomended_x = 12
+        self.change_x()
+
+
         self.initiative = 0
         self.restore = 10
 

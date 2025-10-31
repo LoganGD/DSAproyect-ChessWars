@@ -5,7 +5,7 @@ from .queen import Queen
 
 class Pawn(Piece):
     def __init__(self, position: tuple[int, int], team: int):
-        self.value = 4
+        self.value = 5
         self.stamina = 3
         self.max_stamina = 3
 
@@ -22,7 +22,13 @@ class Pawn(Piece):
         # Weights for different situations
         self.support = 2
         self.attacked = -2
-        self.recomended_x = (6 if self.team == 0 else GRID_WIDTH - 5)
+        
+        
+        self.base_x = 6
+        self.recomended_x = 6
+        self.change_x()
+
+        
         self.initiative = 5
         self.restore = 10
 

@@ -32,3 +32,5 @@ class Queen(Piece):
         self.restore = 5
 
     
+
+    

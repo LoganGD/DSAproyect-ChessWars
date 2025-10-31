@@ -27,6 +27,10 @@ class Knight(Piece):
         # Weights for different situations
         self.support = 5
         self.attacked = -15
-        self.recomended_x = ( 12 if self.team == 0 else GRID_WIDTH - 12)
+        
+        self.base_x = 10
+        self.recomended_x = 10
+        self.change_x()
+
         self.initiative = 10
         self.restore = 5

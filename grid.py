@@ -137,6 +137,15 @@ def update(dt: float, clicked: list | None, action: str | None):
     elif action:
         for piece in Piece.deque[0]:
             if piece.selected:
+                if action == "Attack":
+                    piece.recomended_x = piece.base_x + 2
+                if action == "Defend":
+                    piece.recomended_x = piece.base_x - 2
+
+                if action == "Explore":
+                    self.recomended_x = self.base_x - 2
+                
+                piece.change_x()
                 piece.current_order = action
                 piece.selected = False
                 set_piece(piece)

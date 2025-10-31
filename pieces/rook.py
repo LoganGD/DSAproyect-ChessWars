@@ -25,7 +25,13 @@ class Rook(Piece):
         # Weights for different situations
         self.support = 8
         self.attacked = -15
-        self.recomended_x = ( 8 if self.team == 0 else GRID_WIDTH - 8)
+        
+        
+        self.base_x = 8
+        self.recomended_x = 8
+        self.change_x()
+
+
         self.initiative = 10
         self.restore = 10
 
