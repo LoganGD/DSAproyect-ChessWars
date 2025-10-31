@@ -8,9 +8,9 @@ It's a small project but anyone is free to use it.
 ## Running
 
 Use main.py to run
-´´´bash
+```bash
 python main.py
-´´´
+```
 
 
 ### Requirements
