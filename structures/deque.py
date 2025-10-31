@@ -101,6 +101,27 @@ class Deque(Generic[T]):
         self.__front = None
 
 
+    def remove(self, data: T):
+        current_node = self.__front
+        while current_node and current_node.get_data() != data:
+            current_node = current_node.get_prev()
+        
+        if not current_node:
+            raise ValueError("Value not found")
+        
+        prev = current_node.get_prev()
+        next = current_node.get_next()
+
+        if prev:
+            prev.set_next(next)
+        if next:
+            next.set_prev(prev)
+        
+        if current_node == self.__front:
+            self.__front = prev
+        if current_node == self.__back:
+            self.__back = next
+
     def __repr__(self):
         print("[", end="")
         for value in self:

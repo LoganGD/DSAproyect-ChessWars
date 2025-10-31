@@ -9,7 +9,10 @@ turn_timer = 0
 current_team = 0
 
 
-def init(screen: pygame.Surface, square_size: int, offset: int):
+def init(screen: pygame.Surface, grid_square_size: int, offset: int):
+    global square_size
+    square_size = grid_square_size
+
     global white_square
     global black_square
     global white_blue_square
@@ -33,7 +36,7 @@ def init(screen: pygame.Surface, square_size: int, offset: int):
     font = pygame.font.Font(FONT_STYLE, square_size // 4)
 
     for piece in Piece.__subclasses__():
-        for team, color in enumerate([WHITE, BLACK]):
+        for team in range(2):
             image_path = f"assets/{piece.__name__}_{team}.png"
 
             image = pygame.image.load(image_path).convert_alpha()
@@ -98,16 +101,6 @@ def clear(piece: Piece):
     if x < 0 and x >= GRID_WIDTH and y < 0 and y >= GRID_HEIGHT:
         raise Exception("out of bounds")
     squares[x][y].set(None)
-
-
-def set_resource(position: tuple[int, int], resource: int):
-    x,y = position
-    x = round(x)
-    y = round(y)
-    if x < 0 and x >= GRID_WIDTH and y < 0 and y >= GRID_HEIGHT:
-        raise Exception("out of bounds")
-
-    pass
 
 
 def update(current_time: float, clicked: list | None, action: str | None):
@@ -180,3 +173,17 @@ class Square:
             square = piece_sprites[piece.team][type(piece)]
             square_rect = square.get_rect(center = self.drawing_position)
             self.screen.blit(square, square_rect)
+
+            stamina_bar = pygame.Surface((square_size, square_size * 0.2))
+            offset = square_size * 0.02
+            for i in range(piece.stamina):
+                pygame.draw.rect(stamina_bar, GREEN, 
+                        (i / piece.max_stamina * (square_size - 3 * offset) + offset,
+                         offset, 
+                         1 / piece.max_stamina * square_size - offset * 3,
+                         square_size * 0.15 - offset * 2))
+                
+            stamina_bar_rect = stamina_bar.get_rect(
+                midbottom = self.drawing_position + (0, square_size * 0.5))
+            self.screen.blit(stamina_bar, stamina_bar_rect)
+

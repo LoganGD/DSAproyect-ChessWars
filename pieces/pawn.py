@@ -1,18 +1,23 @@
 import pygame
 from .piece import Piece
+from .queen import Queen
 from constants import *
-
+import grid
 
 class Pawn(Piece):
     def __init__(self, position: tuple[int, int], team: int):
-        super().__init__(position, team)
-
         self.stamina = 3
         self.max_stamina = 3
+
+        super().__init__(position, team)
+
+        self.captured_value = 0
+        def L1():
+            self.max_stamina += 1
+        self.L1 = L1
         def L2():
-            self.max_stamina += 2
+            self.max_stamina += 1
         self.L2 = L2
-        self.L3 = lambda:None
 
         # Weights for different situations
         self.value = 4
@@ -75,6 +80,12 @@ class Pawn(Piece):
 
         return [position for position in moves if self.valid(position)]
         
+
+    def attempt_promotion(self):
+        
+        if self.position[0] == (GRID_WIDTH - 1 if self.team == 0 else 0):
+            Queen(self.position, self.team)
+            self.delete()
 # Piece
 # + LV: capture_value >= self.value
 # + LV: Polvo magico (Cocaina)
