@@ -190,6 +190,15 @@ class Piece:
             
             if piece:
                 piece.delete()
+            
+            if self.value == 4 and self.position[0] == (GRID_WIDTH -1 if self.team == 0 else 0):
+                    from queen import Queen
+                    piece = Queen(self.position, self.team)
+                    self.delete()
+                    grid.set_piece(piece)
+            else:
+                grid.set_piece(self)
+
             grid.set_piece(self)
 
 # Para cada casilla:
