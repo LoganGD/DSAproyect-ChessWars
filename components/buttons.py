@@ -15,7 +15,7 @@ class Button:
         self.color = None
 
         # preparing button sprite
-        font = pygame.font.Font(FONT_STYLE, FONT_SIZE)
+        font = pygame.font.Font(FONT_STYLE, FONT_SIZE_LARGE)
         position = self.rect.w / 2, self.rect.h / 2
         text = font.render(button_text, True, BLACK)
         text_rect = text.get_rect(center = position)

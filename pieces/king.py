@@ -8,6 +8,7 @@ class King(Piece):
     
     def __init__(self, position, team = 0):
         Piece.king[team] = self
+        self.value = 1000
         self.stamina = 5
         self.max_stamina = 5
         self.range = 1
@@ -22,7 +23,6 @@ class King(Piece):
         self.adjacents = list(map(pygame.Vector2, self.adjacents))
 
         # Weights for different situations
-        self.value = 1000
         self.support = 5
         self.attacked = -1000
         self.recomended_x = (0 if self.team == 0 else GRID_WIDTH - 0)

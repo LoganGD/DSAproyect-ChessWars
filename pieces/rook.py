@@ -4,6 +4,7 @@ from .piece import Piece
 
 class Rook(Piece):
     def __init__(self, position, team = 0):
+        self.value = 10
         self.stamina = 5
         self.max_stamina = 5
         self.range = 3
@@ -22,7 +23,6 @@ class Rook(Piece):
         self.directions = list(map(pygame.Vector2, self.directions))
 
         # Weights for different situations
-        self.value = 10
         self.support = 8
         self.attacked = -15
         self.recomended_x = ( 8 if self.team == 0 else GRID_WIDTH - 8)

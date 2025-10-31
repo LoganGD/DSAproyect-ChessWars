@@ -6,7 +6,7 @@ from pieces import *
 
 def main():
     pygame.init()
-    pygame.display.set_caption("Chess 2") # window title
+    pygame.display.set_caption("ChessWars") # window title
 
     # game clock, limits fps
     clock = pygame.time.Clock()
@@ -16,8 +16,8 @@ def main():
     grid.init(gui.screen, gui.square_size, gui.offset)
 
     # debug flag
-    debug_mode = True
-    current_time,dt = 0,0
+    debug_mode = False
+    dt = 0
     fps,prev_fps = 0,0
 
     while True:
@@ -35,8 +35,8 @@ def main():
 
 
         # updates main game and GUI
-        grid.update(dt, clicked, action)
-        gui.output(Piece.king[0])
+        updated = grid.update(dt, clicked, action)
+        gui.output(updated, Piece.king[0])
 
 
         # debugging things
@@ -44,7 +44,7 @@ def main():
             if abs(fps - prev_fps) > 2:
                 prev_fps = round(fps)
 
-                font = pygame.font.Font(FONT_STYLE, FONT_SIZE)
+                font = pygame.font.Font(FONT_STYLE, FONT_SIZE_LARGE)
 
                 fps_text = "FPS: " + str(round(fps))
                 text = font.render(fps_text, True, WHITE, GRAY)

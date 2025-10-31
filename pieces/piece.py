@@ -7,6 +7,7 @@ import grid
 class Piece:
     deque = Deque['Piece'](),Deque['Piece']()
     king = [None, None]
+    danger = 0
 
     def __init__(self, position: tuple[int, int], team: int):
         
@@ -25,7 +26,11 @@ class Piece:
         self.adjacents = list(map(pygame.Vector2, self.adjacents))
 
         self.level = 0
-
+        
+        if team == 0:
+            Piece.danger -= self.value
+        else:
+            Piece.danger += self.value
 
         grid.set_piece(self)
 
@@ -202,6 +207,11 @@ class Piece:
                     Piece.king[not piece.team].high_piece_value += 1
                 if self.value == 15:
                     Piece.king[not piece.team].high_piece_value += 1
+
+                if piece.team == 0:
+                    Piece.danger += piece.value
+                else:
+                    Piece.danger -= piece.value
 
                 self.captured_value += piece.value
 

@@ -5,6 +5,7 @@ from .piece import Piece
 class Knight(Piece):
  
     def __init__(self, position, team = 0):
+        self.value = 8
         self.stamina = 4
         self.max_stamina = 4
         self.range = 1
@@ -24,7 +25,6 @@ class Knight(Piece):
         self.directions = list(map(pygame.Vector2, self.directions))
 
         # Weights for different situations
-        self.value = 8
         self.support = 5
         self.attacked = -15
         self.recomended_x = ( 12 if self.team == 0 else GRID_WIDTH - 12)

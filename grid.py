@@ -1,4 +1,5 @@
 import pygame
+import random
 from constants import *
 
 # empty grid
@@ -6,6 +7,7 @@ squares: list[list['Square']] = [[] for _ in range(GRID_WIDTH)]
 turn_speed = 0
 turn_timer = 1000
 current_team = 0
+turn_count = 0
 
 
 def init(screen: pygame.Surface, grid_square_size: int, offset: int):
@@ -54,63 +56,30 @@ def init(screen: pygame.Surface, grid_square_size: int, offset: int):
             position = pygame.Vector2(i,j)
             squares[i].append(Square(screen, position, square_size, offset))
 
-    # Starting placement
-    Rook((0,2), 0)
-    Knight((0,3), 0)
-    Bishop((0,4), 0)
-    Queen((0,5),0)
-    King((0,6), 0)
-    Bishop((0,7), 0)
-    Knight((0,8), 0)
-    Rook((0,9), 0)
+    # Starting placement 1
+    piece_order = [Rook,Knight,Bishop,King,Queen,Bishop,Knight,Rook]
+    for i,piece in enumerate(piece_order):
+        piece((0,i+2),0)
+        Pawn((1,i+2),0)
+        Pawn((14,i+2),1)
+        piece((15,i+2),1)
 
-    Rook((2,2), 0)
-    Knight((2,3), 0)
-    Bishop((2,4), 0)
-    Queen((2,5),0)
-    
-    Bishop((2,7), 0)
-    Knight((2,8), 0)
-    Rook((2,9), 0)
-
-    Pawn((1,2), 0)
-    Pawn((1,3), 0)
-    Pawn((1,4), 0)
-    Pawn((1,5), 0)
-    Pawn((1,6), 0)
-    Pawn((1,7), 0)
-    Pawn((1,8), 0)
-    Pawn((1,9), 0)
-
-
-    Rook((15,2), 1)
-    Knight((15,3), 1)
-    Bishop((15,4), 1)
-    Queen((15,5),1)
-    King((15,6), 1)
-    Bishop((15,7), 1)
-    Knight((15,8), 1)
-    Rook((15,9), 1)
-
-    Rook((13,2), 1)
-    Knight((13,3), 1)
-    Bishop((13,4), 1)
-    Queen((13,5),1)
-    Bishop((13,7), 1)
-    Knight((13,8), 1)
-    Rook((13,9), 1)
-
-
-    Pawn((14,2), 1)
-    Pawn((14,3), 1)
-    Pawn((14,4), 1)
-    Pawn((14,5), 1)
-    Pawn((14,6), 1)
-    Pawn((14,7), 1)
-    Pawn((14,8), 1)
-    Pawn((14,9), 1)
-    
-   
+    # Starting placement 2
+    # piece_order1 = [Queen,Rook,Knight,Bishop,Queen,King,Rook,Queen,Bishop,Knight,Rook,Queen]
+    # piece_order2 = [Bishop,Knight,Rook,Bishop,Knight,Rook,Queen,Knight,Bishop,Rook,Knight,Bishop]
+    # for i in range(12):
+    #     piece_order1[i]((0,i),0)
+    #     piece_order2[i]((1,i),0)
+    #     if random.random() < 0.6:
+    #         Pawn((2,i),0)
+    #     if random.random() < 0.6:
+    #         Pawn((3,i),0)
+    #     if random.random() < 0.6:
+    #         Pawn((12,i),1)
+    #     if random.random() < 0.6:
+    #         Pawn((13,i),1)
+    #     piece_order2[i]((14,i),1)
+    #     piece_order1[i]((15,i),1)
 
     
 
@@ -146,6 +115,7 @@ def update(dt: float, clicked: list | None, action: str | None):
     global turn_timer
     global turn_speed
     global current_team
+    global turn_count
 
     if clicked:
         x,y = clicked[0]
@@ -174,11 +144,15 @@ def update(dt: float, clicked: list | None, action: str | None):
     turn_timer -= turn_speed * dt
     if turn_timer <= 0:
         turn_timer += 1000
+        turn_count += 1
 
         for piece in Piece.deque[current_team]:
             piece.tick()
 
         current_team = not current_team
+        return True
+    
+    return False
 
 
 class Square:
