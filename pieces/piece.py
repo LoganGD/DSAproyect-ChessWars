@@ -222,6 +222,16 @@ class Piece:
 
     def attempt_promotion(self):
         pass
+
+def main():
+    from bishop import Bishop
+    prueba = Bishop(0,0,1)
+    print(prueba.get_moves())
+
+if __name__ == "main":
+    main()
+
+    
 # Para cada casilla:
 # 1. - Cantidad de piezas que la atacan
 # 2. + Cantidad de piezas que la protegen (atacan pero son del mismo bando)

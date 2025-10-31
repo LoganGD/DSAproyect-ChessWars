@@ -16,7 +16,7 @@ def main():
     grid.init(gui.screen, gui.square_size, gui.offset)
 
     # debug flag
-    debug_mode = False
+    debug_mode = True
     current_time,dt = 0,0
     fps,prev_fps = 0,0
 

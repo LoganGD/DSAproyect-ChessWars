@@ -64,6 +64,15 @@ def init(screen: pygame.Surface, grid_square_size: int, offset: int):
     Knight((0,8), 0)
     Rook((0,9), 0)
 
+    Rook((2,2), 0)
+    Knight((2,3), 0)
+    Bishop((2,4), 0)
+    Queen((2,5),0)
+    
+    Bishop((2,7), 0)
+    Knight((2,8), 0)
+    Rook((2,9), 0)
+
     Pawn((1,2), 0)
     Pawn((1,3), 0)
     Pawn((1,4), 0)
@@ -82,6 +91,15 @@ def init(screen: pygame.Surface, grid_square_size: int, offset: int):
     Bishop((15,7), 1)
     Knight((15,8), 1)
     Rook((15,9), 1)
+
+    Rook((13,2), 1)
+    Knight((13,3), 1)
+    Bishop((13,4), 1)
+    Queen((13,5),1)
+    Bishop((13,7), 1)
+    Knight((13,8), 1)
+    Rook((13,9), 1)
+
 
     Pawn((14,2), 1)
     Pawn((14,3), 1)

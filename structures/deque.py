@@ -138,3 +138,19 @@ class Deque(Generic[T]):
 
     def __len__(self):
         return self.__size
+
+def main():
+    test = Deque()
+    test.push_back(5)
+    test.pop_back()
+    test.push_front(5)
+    test.remove(5)
+
+    
+    test.push_back(10)
+    test.pop_back()
+    test.push_front(10)
+    test.remove(10)
+
+if __name__ == "__main__":
+    main()
