@@ -2,7 +2,7 @@ import pygame
 from constants import *
 from components.buttons import Button
 from pieces import *
-
+import grid
 
 keyboard = ""
 buttons: list[Button] = []
@@ -16,7 +16,7 @@ def init():
     global offset
 
     screen = pygame.display.set_mode(SCREEN_SIZE)
-    screen.fill((255,0,255)) #PURPLE
+    screen.fill(LIGHT_GRAY)
     square_size = screen.get_height() // GRID_HEIGHT
     offset = screen.get_width() - square_size * GRID_WIDTH
 
@@ -34,16 +34,20 @@ def init():
     button_rect = pygame.Rect(*position, *size)
     button = Button(screen, button_rect, "Fast")
     buttons.append(button)
-    position = 50, 320
-    button_rect = pygame.Rect(*position, *size)
-    button = Button(screen, button_rect, "UFast")
-    buttons.append(button)
+    # position = 50, 320 # Ufast is dev only
+    # button_rect = pygame.Rect(*position, *size)
+    # button = Button(screen, button_rect, "UFast")
+    # buttons.append(button)
 
     position = 230, 50
     button_rect = pygame.Rect(*position, *size)
     button = Button(screen, button_rect, "Attack")
     buttons.append(button)
     position = 230, 140
+    button_rect = pygame.Rect(*position, *size)
+    button = Button(screen, button_rect, "Explore")
+    buttons.append(button)
+    position = 230, 230
     button_rect = pygame.Rect(*position, *size)
     button = Button(screen, button_rect, "Defend")
     buttons.append(button)
@@ -56,6 +60,29 @@ def init():
         screen.get_height() - square_size * GRID_HEIGHT
     )
     pygame.draw.rect(screen, BLACK, margin)
+
+
+    console_rect = pygame.Rect(40, 350, 350, 140)
+    pygame.draw.rect(screen, BLACK, console_rect) # fill black
+        
+    font = pygame.font.Font(FONT_STYLE, FONT_SIZE_SMALL)
+    console_offset = pygame.Vector2(console_rect.topleft)
+
+    line = font.render("Select turn speed in first column", True, WHITE) # input
+    screen.blit(line, console_offset + (10,10))
+    
+    line = font.render("Select pieces with right click", True, WHITE) # output
+    screen.blit(line, console_offset + (10,35))
+    
+    line = font.render("and deselect with left click", True, WHITE) # output
+    screen.blit(line, console_offset + (10,60))
+
+    line = font.render("Choose an action for the selected", True, WHITE) # output
+    screen.blit(line, console_offset + (10,85))
+
+    line = font.render("pieces in the second column", True, WHITE) # output
+    screen.blit(line, console_offset + (10,110))
+    
 
 
 def input():
@@ -107,7 +134,7 @@ def input():
     return clicked, action, keyboard, exit
 
 
-def output(king_data: King):
+def output(updated: bool, king_data: King):
     mouse = pygame.mouse.get_pos()
 
     # update mouse hovering on button
@@ -116,19 +143,24 @@ def output(king_data: King):
 
     # showing stats
     
-    console_rect = pygame.Rect(20, 450, 300, 150)
+    if updated:
+        console_rect = pygame.Rect(40, 350, 350, 140)
+        pygame.draw.rect(screen, BLACK, console_rect) # fill black
+            
+        font = pygame.font.Font(FONT_STYLE, FONT_SIZE_SMALL)
+        console_offset = pygame.Vector2(console_rect.topleft)
 
+        line = font.render("Minor piece fragment: " + str(king_data.low_piece_value), True, WHITE) # input
+        screen.blit(line, console_offset + (10,10))
 
-    pygame.draw.rect(screen, BLACK, console_rect) # fill black
-        
-    font = pygame.font.Font(FONT_STYLE, FONT_SIZE)
-    offset = pygame.Vector2(console_rect.topleft)
+        line = font.render("Mayor piece fragment: " + str(king_data.high_piece_value), True, WHITE) # output
+        screen.blit(line, console_offset + (10,35))
 
-    line = font.render(str(king_data.low_piece_value), True, WHITE) # input
-    screen.blit(line, offset + (5,5))
+        line = font.render("Turns: " + str(grid.turn_count), True, WHITE) # output
+        screen.blit(line, console_offset + (10,60))
 
-    line = font.render(str(king_data.high_piece_value), True, WHITE) # output
-    screen.blit(line, offset + (5,30))
+        line = font.render("Danger level: " + str(max(0,king_data.danger)), True, WHITE) # output
+        screen.blit(line, console_offset + (10,85))
 
 
     pygame.display.flip()
